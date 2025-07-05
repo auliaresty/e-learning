@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deadline Tugas - Dashboard Mahasiswa</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* CSS yang sudah ada */
+        :root {
+            --primary-color: #7FB3D3;
+            --secondary-color: #B8D4E3;
+            --accent-color: #E8F4F8;
+            --white: #FFFFFF;
+            --light-gray: #F8F9FA;
+            --text-dark: #2C3E50;
+            --shadow: 0 4px 12px rgba(127, 179, 211, 0.15);
+            --danger: #E74C3C;
+            --warning: #F39C12;
+            --success: #27AE60;
+        }
+
+        body {
+            background: linear-gradient(135deg, #E8F4F8 0%, #B8D4E3 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+        }
+
+        .dashboard-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 1.5rem 0;
+            box-shadow: var(--shadow);
+            border-radius: 0 0 20px 20px;
+            margin-bottom: 2rem;
+        }
+
+        .profile-section {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .profile-pic {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .back-btn, .refresh-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            border-radius: 25px;
+            padding: 0.5rem 1.5rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            margin-right: 0.5rem;
+        }
+
+        .back-btn:hover, .refresh-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .deadline-card {
+            background: var(--white);
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            margin-bottom: 1.5rem;
+            border: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .deadline-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        }
+
+        .deadline-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(127, 179, 211, 0.25);
+        }
+
+        .deadline-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .mata-kuliah-badge {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .tugas-title {
+            font-weight: 700;
+            color: var(--text-dark);
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .tugas-description {
+            color: #6C757D;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .deadline-info {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .deadline-date {
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .deadline-date i {
+            margin-right: 0.5rem;
+            color: var(--primary-color);
+        }
+
+        .btn-action {
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .btn-primary-custom {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+        }
+
+        .btn-primary-custom:hover {
+            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+            transform: translateY(-2px);
+        }
+
+        .filter-section {
+            background: var(--white);
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+        }
+
+        .filter-title {
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .filter-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            border: 2px solid var(--primary-color);
+            background: transparent;
+            color: var(--primary-color);
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn.active {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .filter-btn:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .section-title {
+            color: var(--text-dark);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #6C757D;
+            display: none; /* Akan diatur oleh JS */
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .upload-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .upload-content {
+            background: var(--white);
+            border-radius: 15px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: var(--shadow);
+        }
+
+        .upload-zone {
+            border: 2px dashed var(--primary-color);
+            border-radius: 10px;
+            padding: 2rem;
+            text-align: center;
+            margin: 1rem 0;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .upload-zone:hover {
+            border-color: var(--secondary-color);
+            background: var(--accent-color);
+        }
+
+        .upload-zone.dragover {
+            border-color: var(--success);
+            background: rgba(39, 174, 96, 0.1);
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-header {
+                margin-bottom: 1rem;
+            }
+            
+            .deadline-info {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .deadline-actions {
+                width: 100%;
+                justify-content: flex-end;
+            }
+            
+            .filter-buttons {
+                justify-content: center;
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.6s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="dashboard-header">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <div class="profile-section">
+                            <div class="d-flex align-items-center">
+                                <div class="profile-pic me-3">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <div>
+                                    <h5 class="welcome-text m-0">Deadline Tugas</h5>
+                                    <p class="student-id m-0">Kelola deadline tugas kuliah Anda</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <a href="#" class="refresh-btn" onclick="refreshPage()">
+                            <i class="fas fa-sync-alt me-2"></i>Refresh
+                        </a>
+                       <a href="dash-mahasiswa.html" class="back-btn">
+                            <i class="fas fa-arrow-left me-2"></i>Kembali
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="filter-section fade-in">
+                <h5 class="filter-title">
+                    <i class="fas fa-filter me-2"></i>Filter Mata Kuliah
+                </h5>
+                <div class="filter-buttons" id="filterButtonsContainer">
+                    <button class="filter-btn active" data-filter="all">Semua</button>
+                    <span id="loadingFilterCourses" class="text-muted" style="display: none;">
+                        <i class="fas fa-spinner fa-spin me-2"></i> Memuat filter...
+                    </span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    <h3 class="section-title fade-in">
+                        <i class="fas fa-tasks me-2"></i>Daftar Tugas & Deadline
+                    </h3>
+                </div>
+            </div>
+
+            <div id="deadlineContainer" class="row">
+                <div class="col-12 text-center text-muted" id="loadingDeadlines">
+                    <i class="fas fa-spinner fa-spin me-2"></i> Memuat tugas...
+                </div>
+            </div>
+
+            <div id="emptyState" class="empty-state">
+                <i class="fas fa-clipboard-list"></i>
+                <h4>Tidak ada tugas ditemukan</h4>
+                <p>Tidak ada tugas yang sesuai dengan filter yang dipilih.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="uploadModal" class="upload-modal">
+        <div class="upload-content">
+            <h4 id="modalTitle" class="mb-3">Upload Tugas</h4>
+            <div class="mb-3">
+                <p><strong>Judul:</strong> <span id="taskTitle"></span></p>
+                <p><strong>Deskripsi:</strong> <span id="taskDesc"></span></p>
+                <p><strong>Deadline:</strong> <span id="taskDeadline"></span></p>
+            </div>
+            <div id="submissionInfo" class="mb-3 hidden">
+                <p><strong>Status:</strong> Sudah disubmit</p>
+                <p><strong>File Terkirim:</strong> <span id="submittedFile"></span></p>
+                <button class="btn-action btn-primary-custom" onclick="viewSubmission()">
+                    <i class="fas fa-eye me-1"></i>Lihat Tugas
+                </button>
+            </div>
+            <div id="uploadZone" class="upload-zone">
+                <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                <p>Drag & drop file Anda di sini atau klik untuk memilih file</p>
+                <input type="file" id="fileInput" class="file-input" multiple>
+            </div>
+            <div id="fileList" class="mb-3"></div>
+            <div class="d-flex justify-content-end gap-2">
+                <button class="btn-action" style="background: var(--danger); color: white;" onclick="closeUploadModal()">Batal</button>
+                <button id="submitButton" class="btn-action btn-primary-custom" onclick="submitFiles()">Submit</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Asumsi student_id saat ini
+        const currentStudentId = 1; 
+        let allAssignments = []; // Untuk menyimpan semua tugas yang diambil
+
+        // Fungsi untuk mengambil data mata kuliah yang di-enroll (untuk filter)
+        async function fetchEnrolledCourses(studentId) {
+            try {
+                // Menggunakan API yang sama dengan dash-mahasiswa.html dan kelas.html
+                const response = await fetch(`http://localhost/api/get_student_courses.php?user_id=${studentId}`); 
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                if (data.error) {
+                    console.error("API Error:", data.error);
+                    return [];
+                }
+                return data;
+            } catch (error) {
+                console.error("Error fetching enrolled courses:", error);
+                return [];
+            }
+        }
+
+        // Fungsi untuk menampilkan tombol filter mata kuliah
+        async function displayFilterButtons() {
+            const filterButtonsContainer = document.getElementById('filterButtonsContainer');
+            const loadingFilterCourses = document.getElementById('loadingFilterCourses');
+            loadingFilterCourses.style.display = 'inline-block'; // Tampilkan loading
+
+            const courses = await fetchEnrolledCourses(currentStudentId);
+            
+            loadingFilterCourses.style.display = 'none'; // Sembunyikan loading
+
+            if (courses.length > 0) {
+                // Tambahkan tombol untuk setiap mata kuliah
+                courses.forEach(course => {
+                    const button = document.createElement('button');
+                    button.className = 'filter-btn';
+                    button.setAttribute('data-filter', course.course_id); // Filter berdasarkan ID mata kuliah
+                    button.textContent = course.course_name;
+                    button.addEventListener('click', () => filterDeadlines(course.course_id));
+                    filterButtonsContainer.appendChild(button);
+                });
+            }
+        }
+
+        // Fungsi untuk mengambil semua tugas
+        async function fetchAllAssignments() {
+            try {
+                // Ganti URL ini dengan API endpoint backend Anda untuk semua tugas
+                // Atau bisa juga /api/get_assignments_by_student.php?student_id=${currentStudentId}
+                // Untuk demo ini, kita asumsikan ambil semua tugas lalu filter di frontend
+                // Namun lebih baik ambil yang relevan saja dari backend
+                const response = await fetch(`http://localhost/api/get_all_assignments.php`); 
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                if (data.error) {
+                    console.error("API Error:", data.error);
+                    return [];
+                }
+                return data;
+            } catch (error) {
+                console.error("Error fetching assignments:", error);
+                return [];
+            }
+        }
+
+        // Fungsi untuk menampilkan tugas
+        async function displayDeadlines(filterCourseId = 'all') {
+            const deadlineContainer = document.getElementById('deadlineContainer');
+            const emptyState = document.getElementById('emptyState');
+            const loadingDeadlines = document.getElementById('loadingDeadlines');
+
+            loadingDeadlines.style.display = 'block'; // Tampilkan loading
+            deadlineContainer.innerHTML = ''; // Kosongkan konten sebelumnya
+            emptyState.style.display = 'none'; // Sembunyikan pesan kosong
+
+            // Jika belum ada data tugas yang dimuat, ambil semua dari API
+            if (allAssignments.length === 0) {
+                allAssignments = await fetchAllAssignments();
+            }
+
+            loadingDeadlines.style.display = 'none'; // Sembunyikan loading
+
+            let filteredAssignments = [];
+            if (filterCourseId === 'all') {
+                filteredAssignments = allAssignments;
+            } else {
+                filteredAssignments = allAssignments.filter(assignment => assignment.course_id == filterCourseId);
+            }
+
+            if (filteredAssignments.length > 0) {
+                for (const assignment of filteredAssignments) {
+                    // Cek status submission untuk setiap tugas
+                    const submissionStatus = await fetchSubmissionStatus(assignment.assignment_id, currentStudentId);
+                    const isSubmitted = submissionStatus.submitted;
+                    const submittedFilePath = submissionStatus.file_path || 'Tidak ada file';
+
+                    const colDiv = document.createElement('div');
+                    colDiv.className = 'col-12 fade-in';
+                    colDiv.innerHTML = `
+                        <div class="deadline-card" data-subject="${assignment.course_id}">
+                            <div class="deadline-header">
+                                <span class="mata-kuliah-badge">${assignment.course_name || 'Tidak Diketahui'}</span>
+                            </div>
+                            <h4 class="tugas-title">${assignment.title}</h4>
+                            <p class="tugas-description">${assignment.description || 'Tidak ada deskripsi.'}</p>
+                            <div class="deadline-info">
+                                <div class="deadline-date">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    <span>Deadline: ${formatDateTime(assignment.due_date)}</span>
+                                </div>
+                                <div class="deadline-actions">
+                                    ${isSubmitted ? `
+                                        <span class="badge bg-success me-2">Sudah Disubmit</span>
+                                        <button class="btn-action btn-primary-custom" onclick="openUploadModal(${assignment.assignment_id}, '${assignment.title}', '${assignment.description}', '${assignment.due_date}', true, '${submittedFilePath}')">
+                                            <i class="fas fa-eye me-1"></i>Lihat
+                                        </button>
+                                    ` : `
+                                        <span class="badge bg-warning text-dark me-2">Belum Disubmit</span>
+                                        <button class="btn-action btn-primary-custom" onclick="openUploadModal(${assignment.assignment_id}, '${assignment.title}', '${assignment.description}', '${assignment.due_date}', false, '')">
+                                            <i class="fas fa-upload me-1"></i>Submit
+                                        </button>
+                                    `}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    deadlineContainer.appendChild(colDiv);
+                }
+            } else {
+                emptyState.style.display = 'block';
+            }
+        }
+
+        // Fungsi untuk filter tugas (dipanggil dari tombol)
+        function filterDeadlines(filterValue) {
+            // Update tombol filter aktif
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.filter == filterValue) {
+                    btn.classList.add('active');
+                }
+            });
+            displayDeadlines(filterValue);
+        }
+        
+        // Fungsi untuk mengambil status submit tugas (sama seperti di kelas.html)
+        async function fetchSubmissionStatus(assignmentId, studentId) {
+            try {
+                // Menggunakan API yang sama dengan kelas.html
+                const response = await fetch(`http://localhost/api/get_submission_status.php?assignment_id=${assignmentId}&student_id=${studentId}`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                if (data.error) {
+                    console.error("API Error:", data.error);
+                    return { submitted: false, file_path: null };
+                }
+                // Jika ada submission, kembalikan status submitted dan file_path
+                return { submitted: data.submitted_at !== null, file_path: data.submission_file_path };
+            } catch (error) {
+                console.error("Error fetching submission status:", error);
+                return { submitted: false, file_path: null };
+            }
+        }
+
+        // --- Fungsi Modal Upload dan Submit (Disesuaikan untuk dinamis) ---
+        let currentAssignmentId = null;
+
+        function openUploadModal(assignmentId, title, description, deadline, isSubmitted, submittedFilePath) {
+            currentAssignmentId = assignmentId;
+            document.getElementById('modalTitle').textContent = `Detail Tugas: ${title}`;
+            document.getElementById('taskTitle').textContent = title;
+            document.getElementById('taskDesc').textContent = description;
+            document.getElementById('taskDeadline').textContent = formatDateTime(deadline);
+
+            const submissionInfoDiv = document.getElementById('submissionInfo');
+            const uploadZoneDiv = document.getElementById('uploadZone');
+            const submitButton = document.getElementById('submitButton');
+
+            if (isSubmitted) {
+                submissionInfoDiv.classList.remove('hidden');
+                document.getElementById('submittedFile').textContent = submittedFilePath;
+                uploadZoneDiv.style.display = 'none'; // Sembunyikan upload zone
+                submitButton.style.display = 'none'; // Sembunyikan tombol submit
+            } else {
+                submissionInfoDiv.classList.add('hidden');
+                uploadZoneDiv.style.display = 'block'; // Tampilkan upload zone
+                submitButton.style.display = 'block'; // Tampilkan tombol submit
+                document.getElementById('fileList').innerHTML = ''; // Kosongkan daftar file
+                document.getElementById('fileInput').value = ''; // Reset input file
+            }
+
+            document.getElementById('uploadModal').style.display = 'flex';
+        }
+
+        // Fungsi untuk menutup modal upload
+        function closeUploadModal() {
+            document.getElementById('uploadModal').style.display = 'none';
+        }
+
+        // Fungsi untuk melihat submission yang sudah ada
+        function viewSubmission() {
+            const filePath = document.getElementById('submittedFile').textContent;
+            if (filePath && filePath !== 'Tidak ada file') {
+                alert(`Membuka file submission: ${filePath}`);
+                // window.open(filePath, '_blank'); // Atau logic lain untuk melihat file
+            } else {
+                alert('Tidak ada file submission untuk ditampilkan.');
+            }
+        }
+
+        // --- Fungsi File Upload (sama seperti di kelas.html) ---
+        const uploadZone = document.getElementById('uploadZone');
+        const fileInput = document.getElementById('fileInput');
+        const fileList = document.getElementById('fileList');
+
+        uploadZone.addEventListener('click', () => fileInput.click());
+
+        uploadZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadZone.classList.add('dragover');
+        });
+
+        uploadZone.addEventListener('dragleave', () => {
+            uploadZone.classList.remove('dragover');
+        });
+
+        uploadZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadZone.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            handleFiles(files);
+        });
+
+        fileInput.addEventListener('change', () => {
+            handleFiles(fileInput.files);
+        });
+
+        function handleFiles(files) {
+            fileList.innerHTML = '';
+            if (files.length > 0) {
+                const file = files[0]; // Hanya ambil 1 file untuk tugas
+                const fileItem = document.createElement('p');
+                fileItem.textContent = `${file.name} (${(file.size / 1024).toFixed(2)} KB)`;
+                fileList.appendChild(fileItem);
+            }
+        }
+
+        // Fungsi untuk submit file tugas (sama seperti di kelas.html)
+        async function submitFiles() {
+            const files = fileInput.files;
+            if (files.length === 0) {
+                alert('Pilih file terlebih dahulu!');
+                return;
+            }
+
+            const fileToUpload = files[0];
+            const formData = new FormData();
+            formData.append('assignment_id', currentAssignmentId);
+            formData.append('student_id', currentStudentId);
+            formData.append('file_submission', fileToUpload);
+
+            try {
+                // Menggunakan API yang sama dengan kelas.html
+                const response = await fetch('http://localhost/api/submit_assignment.php', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const result = await response.json();
+
+                if (result.success) {
+                    alert('Tugas berhasil disubmit!');
+                    // Refresh daftar tugas setelah submit berhasil
+                    displayDeadlines('all'); // Refresh semua tugas atau yang difilter jika perlu
+                    closeUploadModal();
+                } else {
+                    alert(`Gagal submit tugas: ${result.error || 'Terjadi kesalahan.'}`);
+                }
+            } catch (error) {
+                console.error("Error submitting files:", error);
+                alert('Terjadi kesalahan saat mengupload file. Silakan coba lagi.');
+            }
+        }
+
+
+        // Fungsi utilitas untuk format tanggal/waktu (sama seperti di file sebelumnya)
+        function formatDateTime(datetimeString) {
+            const date = new Date(datetimeString);
+            return date.toLocaleDateString('id-ID', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        // Refresh halaman
+        function refreshPage() {
+            window.location.reload();
+        }
+
+        // Kembali ke halaman dashboard
+        function goBack() {
+            window.location.href = 'dash-mahasiswa.html';
+        }
+
+        // Inisialisasi halaman
+        document.addEventListener('DOMContentLoaded', function() {
+            displayFilterButtons(); // Muat tombol filter mata kuliah
+            displayDeadlines('all'); // Muat semua tugas secara default
+
+            const fadeElements = document.querySelectorAll('.fade-in');
+            fadeElements.forEach((element, index) => {
+                element.style.animationDelay = `${index * 0.1}s`;
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1320 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis - Portal Pembelajaran</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* CSS yang sudah ada */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow-x: hidden;
+        }
+
+        .quiz-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .quiz-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 25px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            width: 100%;
+            max-width: 900px;
+            min-height: 600px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .quiz-header {
+            background: linear-gradient(145deg, #4a90e2, #357abd);
+            color: white;
+            padding: 25px 30px;
+            border-radius: 25px 25px 0 0;
+            text-align: center;
+            position: relative;
+        }
+
+        .quiz-title-header { /* Ubah id agar tidak konflik dengan quizTitle di lpquiz.html */
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .quiz-subtitle-header { /* Ubah id agar tidak konflik dengan quizSubtitle di lpquiz.html */
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin: 0;
+        }
+
+        .progress-container {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 4px;
+            margin-top: 15px;
+        }
+
+        .progress-bar {
+            background: linear-gradient(90deg, #2ecc71, #27ae60);
+            height: 8px;
+            border-radius: 20px;
+            transition: width 0.5s ease;
+        }
+
+        .progress-text {
+            text-align: center;
+            margin-top: 8px;
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .quiz-content {
+            flex: 1;
+            padding: 40px 30px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .question-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .question-number {
+            color: #4a90e2;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .question-text {
+            font-size: 1.3rem;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            line-height: 1.6;
+            flex-grow: 1;
+        }
+
+        .math-formula {
+            background: #f8f9fa;
+            border-left: 4px solid #4a90e2;
+            padding: 15px 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1rem;
+        }
+
+        .options-container {
+            margin-bottom: 30px;
+        }
+
+        .option-item {
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .option-input {
+            display: none;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: center;
+            padding: 18px 25px;
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option-label:hover {
+            background: #e3f2fd;
+            border-color: #4a90e2;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(74, 144, 226, 0.2);
+        }
+
+        .option-label.selected {
+            background: linear-gradient(145deg, #4a90e2, #357abd);
+            border-color: #357abd;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(74, 144, 226, 0.3);
+        }
+
+        .option-label.correct {
+            background: linear-gradient(145deg, #2ecc71, #27ae60);
+            border-color: #27ae60;
+            color: white;
+        }
+
+        .option-label.incorrect {
+            background: linear-gradient(145deg, #e74c3c, #c0392b);
+            border-color: #c0392b;
+            color: white;
+        }
+
+        .option-letter {
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-right: 15px;
+            width: 30px;
+            height: 30px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .option-label.selected .option-letter,
+        .option-label.correct .option-letter,
+        .option-label.incorrect .option-letter {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .option-text {
+            flex: 1;
+            font-size: 1.1rem;
+            line-height: 1.4;
+        }
+
+        .result-icon {
+            margin-left: 15px;
+            font-size: 1.3rem;
+            opacity: 0;
+            transform: scale(0);
+            transition: all 0.3s ease;
+        }
+
+        .option-label.correct .result-icon,
+        .option-label.incorrect .result-icon {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .navigation-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 20px;
+            border-top: 2px solid #f1f3f4;
+        }
+
+        .nav-button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-previous {
+            background: linear-gradient(145deg, #95a5a6, #7f8c8d);
+            color: white;
+        }
+
+        .btn-previous:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(149, 165, 166, 0.4);
+        }
+
+        .btn-previous:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-next {
+            background: linear-gradient(145deg, #4a90e2, #357abd);
+            color: white;
+        }
+
+        .btn-next:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(74, 144, 226, 0.4);
+        }
+
+        .btn-next:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-finish {
+            background: linear-gradient(145deg, #2ecc71, #27ae60);
+            color: white;
+        }
+
+        .btn-finish:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4);
+        }
+
+        .answer-status {
+            text-align: center;
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 15px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+
+        .answer-status.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .answer-status.correct {
+            background: rgba(46, 204, 113, 0.1);
+            color: #27ae60;
+            border: 2px solid rgba(46, 204, 113, 0.3);
+        }
+
+        .answer-status.incorrect {
+            background: rgba(231, 76, 60, 0.1);
+            color: #c0392b;
+            border: 2px solid rgba(231, 76, 60, 0.3);
+        }
+
+        .results-container {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .results-title {
+            font-size: 2.2rem;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .score-display {
+            font-size: 3rem;
+            font-weight: 800;
+            margin: 30px 0;
+            padding: 30px;
+            border-radius: 20px;
+            background: linear-gradient(145deg, #f39c12, #e67e22);
+            color: white;
+            display: inline-block;
+            min-width: 200px;
+        }
+
+        .score-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .score-item {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            border-left: 4px solid #4a90e2;
+        }
+
+        .score-item h4 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .score-item .number {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #4a90e2;
+        }
+
+        .restart-button {
+            background: linear-gradient(145deg, #9b59b6, #8e44ad);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .restart-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(155, 89, 182, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .quiz-container {
+                padding: 10px;
+            }
+
+            .quiz-content {
+                padding: 30px 20px;
+            }
+
+            .quiz-title-header { /* Ubah id */
+                font-size: 1.5rem;
+            }
+
+            .question-text {
+                font-size: 1.1rem;
+            }
+
+            .option-label {
+                padding: 15px 20px;
+            }
+
+            .option-text {
+                font-size: 1rem;
+            }
+
+            .navigation-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .nav-button {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .score-display {
+                font-size: 2.5rem;
+                padding: 20px;
+            }
+        }
+
+        /* Animasi masuk */
+        .fade-in {
+            animation: fadeIn 0.6s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Loading animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <div class="quiz-card fade-in" id="quizCard">
+            <div class="quiz-header">
+                <h1 class="quiz-title-header" id="quizHeaderTitle">Kuis</h1>
+                <p class="quiz-subtitle-header" id="quizHeaderSubtitle">Pilih jawaban yang paling tepat untuk setiap pertanyaan</p>
+                <div class="progress-container">
+                    <div class="progress-bar" id="progressBar"></div>
+                </div>
+                <div class="progress-text" id="progressText">Memuat Pertanyaan...</div>
+            </div>
+
+            <div class="quiz-content" id="quizContent">
+                <div id="loadingQuizContent" class="text-center text-muted" style="display: block;">
+                    <i class="fas fa-spinner fa-spin me-2"></i> Memuat kuis...
+                </div>
+                <div class="question-container" style="display: none;">
+                    <div class="question-number" id="questionNumber"></div>
+                    <div class="question-text" id="questionText">
+                        </div>
+                    
+                    <div class="options-container" id="optionsContainer">
+                        </div>
+                    
+                    <div class="answer-status" id="answerStatus">
+                        </div>
+                </div>
+
+                <div class="navigation-container" style="display: none;">
+                    <button class="nav-button btn-previous" id="prevButton" onclick="previousQuestion()" disabled>
+                        <i class="fas fa-arrow-left"></i>
+                        Sebelumnya
+                    </button>
+                    
+                    <button class="nav-button btn-next" id="nextButton" onclick="nextQuestion()" disabled>
+                        Selanjutnya
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Asumsi student_id saat ini
+        const currentStudentId = 1; 
+        let currentQuizId = localStorage.getItem('currentQuizId'); // Ambil quiz_id dari localStorage
+        if (!currentQuizId) {
+            alert('Quiz ID tidak ditemukan. Kembali ke halaman Quiz Landing Page.');
+            window.location.href = 'lpquiz.html'; // Redirect jika tidak ada quiz ID
+        }
+
+        let questions = []; // Akan diisi dari API
+        let currentQuestionIndex = 0;
+        let userAnswers = []; // Array of {questionId: N, selectedOptionId: M, isCorrect: true/false}
+        let isAnswered = false; // Status apakah pertanyaan saat ini sudah dijawab
+        let score = 0;
+        let correctAnswers = 0;
+        let quizCompleted = false;
+        let quizDetails = null; // Menyimpan detail kuis dari API
+
+        // Global timer variables
+        let quizTimerInterval;
+        let timeRemainingSeconds = 0;
+        const TIMER_ELEMENT_ID = 'quizHeaderTimer'; // ID untuk elemen timer di header (akan dibuat)
+
+        // Fungsi untuk mengambil detail kuis dan pertanyaan
+        async function fetchQuizContent(quizId) {
+            try {
+                // Fetch quiz details (title, description, duration)
+                const quizDetailsResponse = await fetch(`http://localhost/api/get_quiz_details.php?quiz_id=${quizId}`);
+                if (!quizDetailsResponse.ok) throw new Error(`HTTP error fetching quiz details! status: ${quizDetailsResponse.status}`);
+                quizDetails = await quizDetailsResponse.json();
+                
+                // Fetch questions and options
+                const questionsResponse = await fetch(`http://localhost/api/get_quiz_questions.php?quiz_id=${quizId}`);
+                if (!questionsResponse.ok) throw new Error(`HTTP error fetching questions! status: ${questionsResponse.status}`);
+                const fetchedQuestions = await questionsResponse.json();
+
+                // Group options under their respective questions
+                const organizedQuestions = {};
+                fetchedQuestions.forEach(q => {
+                    if (!organizedQuestions[q.question_id]) {
+                        organizedQuestions[q.question_id] = {
+                            id: q.question_id,
+                            quiz_id: q.quiz_id,
+                            question: q.question_text,
+                            formula: q.question_formula,
+                            question_type: q.question_type,
+                            correct_option_id: q.correct_option_id, // Store correct option ID from DB
+                            explanation: q.explanation,
+                            options: []
+                        };
+                    }
+                    if (q.option_id) { // Only add if it's an option, not a standalone question
+                        organizedQuestions[q.question_id].options.push({
+                            option_id: q.option_id,
+                            option_text: q.option_text,
+                            is_correct: q.is_correct // This `is_correct` field will be ignored for logic
+                        });
+                    }
+                });
+                
+                // Convert object to array and sort by question_id
+                return Object.values(organizedQuestions).sort((a, b) => a.id - b.id);
+
+            } catch (error) {
+                console.error("Error fetching quiz content:", error);
+                return [];
+            }
+        }
+
+        // Fungsi untuk mengirim hasil kuis ke backend
+        async function submitQuizResult(finalScore, correctCount, totalAnswered, totalQuestions) {
+            try {
+                const response = await fetch('http://localhost/api/submit_quiz_result.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        quiz_id: currentQuizId,
+                        student_id: currentStudentId,
+                        score: finalScore,
+                        correct_answers_count: correctCount,
+                        total_questions_answered: totalAnswered,
+                        total_questions: totalQuestions // Tambahkan total_questions
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const result = await response.json();
+                if (result.success) {
+                    console.log("Quiz result submitted successfully:", result.message);
+                } else {
+                    console.error("Failed to submit quiz result:", result.error);
+                }
+            } catch (error) {
+                console.error("Error submitting quiz result:", error);
+            }
+        }
+
+        // --- Timer Functions ---
+        function startQuizTimer() {
+            // Jika sudah ada timer, hentikan dulu
+            if (quizTimerInterval) {
+                clearInterval(quizTimerInterval);
+            }
+
+            // Tambahkan elemen timer ke header jika belum ada
+            let timerElement = document.getElementById(TIMER_ELEMENT_ID);
+            if (!timerElement) {
+                timerElement = document.createElement('div');
+                timerElement.id = TIMER_ELEMENT_ID;
+                timerElement.className = 'quiz-subtitle-header'; // Re-use class for styling
+                const header = document.querySelector('.quiz-header');
+                header.appendChild(timerElement);
+            }
+
+            const durationInMinutes = quizDetails.duration_minutes;
+            timeRemainingSeconds = durationInMinutes * 60;
+
+            quizTimerInterval = setInterval(function() {
+                timeRemainingSeconds--;
+                
+                if (timeRemainingSeconds <= 0) {
+                    clearInterval(quizTimerInterval);
+                    autoSubmitExam();
+                    return;
+                }
+                
+                const hours = Math.floor(timeRemainingSeconds / 3600);
+                const minutes = Math.floor((timeRemainingSeconds % 3600) / 60);
+                const seconds = timeRemainingSeconds % 60;
+                
+                const timeString = 
+                    String(hours).padStart(2, '0') + ':' +
+                    String(minutes).padStart(2, '0') + ':' +
+                    String(seconds).padStart(2, '0');
+                
+                timerElement.textContent = `Sisa Waktu: ${timeString}`;
+                
+                // Change color when time is running out (optional, can be done with CSS classes)
+                // if (timeRemainingSeconds <= 300) { /* 5 minutes */ }
+            }, 1000);
+        }
+
+        function stopQuizTimer() {
+            if (quizTimerInterval) {
+                clearInterval(quizTimerInterval);
+                const timerElement = document.getElementById(TIMER_ELEMENT_ID);
+                if (timerElement) {
+                    timerElement.remove(); // Hapus elemen timer dari DOM
+                }
+            }
+        }
+
+
+        // Initialize quiz
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Sembunyikan konten kuis utama dan tampilkan loading
+            document.getElementById('loadingQuizContent').style.display = 'block';
+            document.querySelector('.question-container').style.display = 'none';
+            document.querySelector('.navigation-container').style.display = 'none';
+
+            questions = await fetchQuizContent(currentQuizId); // Ambil data dari API
+
+            if (questions.length > 0 && quizDetails) {
+                document.getElementById('loadingQuizContent').style.display = 'none';
+                document.querySelector('.question-container').style.display = 'flex';
+                document.querySelector('.navigation-container').style.display = 'flex';
+
+                document.getElementById('quizHeaderTitle').textContent = quizDetails.title;
+                document.getElementById('quizHeaderSubtitle').textContent = quizDetails.description;
+                
+                initializeQuiz();
+                displayQuestion();
+                startQuizTimer(); // Mulai timer setelah kuis dimuat
+            } else {
+                document.getElementById('loadingQuizContent').innerHTML = `
+                    <div class="text-center text-danger">
+                        <i class="fas fa-exclamation-circle me-2"></i> Gagal memuat kuis atau kuis tidak memiliki pertanyaan.
+                    </div>
+                    <button class="btn btn-primary mt-3" onclick="window.location.href='lpquiz.html'">
+                        <i class="fas fa-arrow-left me-2"></i> Kembali ke Halaman Kuis
+                    </button>
+                `;
+            }
+        });
+
+        function initializeQuiz() {
+            // userAnswers akan menyimpan ID opsi yang dipilih untuk setiap pertanyaan
+            userAnswers = new Array(questions.length).fill({ selectedOptionId: null, correctOptionId: null });
+            currentQuestionIndex = 0;
+            isAnswered = false; // Reset status jawaban per pertanyaan
+            score = 0;
+            correctAnswers = 0;
+            quizCompleted = false;
+            updateProgress();
+        }
+
+        function displayQuestion() {
+            const question = questions[currentQuestionIndex];
+            
+            // Update question number and text
+            document.getElementById('questionNumber').textContent = `Pertanyaan ${currentQuestionIndex + 1}`;
+            
+            let questionHTML = question.question;
+            if (question.formula) {
+                questionHTML += `<div class="math-formula">${question.formula}</div>`;
+            }
+            document.getElementById('questionText').innerHTML = questionHTML;
+
+            // Create options
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+
+            // Pastikan question.options adalah array dan ada isinya
+            if (question.options && question.options.length > 0) {
+                question.options.forEach((option, index) => {
+                    const optionElement = createOptionElement(option.option_text, option.option_id, question.id, index);
+                    optionsContainer.appendChild(optionElement);
+                });
+            } else {
+                // Jika tidak ada opsi, mungkin ini pertanyaan esai atau kode
+                if (question.question_type === 'essay' || question.question_type === 'code') {
+                    const textarea = document.createElement('textarea');
+                    textarea.className = 'form-control';
+                    textarea.rows = 8;
+                    textarea.placeholder = question.question_type === 'essay' ? 'Tulis jawaban Anda di sini...' : '// Tulis kode di sini\nfunction solution() {\n\n}';
+                    textarea.id = `q_essay_code_${question.id}`;
+                    textarea.value = userAnswers[currentQuestionIndex].selectedOptionId || ''; // Gunakan selectedOptionId untuk menyimpan teks
+                    textarea.addEventListener('input', () => {
+                        // Simpan jawaban esai/kode saat ada perubahan
+                        userAnswers[currentQuestionIndex] = { 
+                            selectedOptionId: textarea.value, 
+                            correctOptionId: question.correct_option_id // correct_option_id mungkin null/kosong untuk esai
+                        };
+                        isAnswered = textarea.value.trim().length > 0;
+                        updateNavigationButtons(); // Perbarui tombol karena status dijawab berubah
+                        updateProgress();
+                    });
+                    optionsContainer.appendChild(textarea);
+                }
+            }
+
+
+            // Update navigation buttons
+            updateNavigationButtons();
+            
+            // Reset answer status
+            document.getElementById('answerStatus').classList.remove('show', 'correct', 'incorrect');
+            
+            // Update progress
+            updateProgress();
+            
+            // Add fade in animation
+            document.getElementById('quizContent').classList.add('fade-in');
+            
+            // Re-select previously chosen answer if exists
+            isAnswered = false; // Reset for current question
+            if (userAnswers[currentQuestionIndex] && userAnswers[currentQuestionIndex].selectedOptionId !== null) {
+                const selected = userAnswers[currentQuestionIndex].selectedOptionId;
+                if (question.question_type === 'multiple_choice') {
+                    const radio = document.querySelector(`input[value="${selected}"]`);
+                    if (radio) {
+                        radio.checked = true;
+                        // For multiple choice, when coming back, we already know the status
+                        showFeedbackOnReturn(selected, question.correct_option_id);
+                    }
+                } else { // For essay/code, just check if text exists
+                    isAnswered = (selected.trim().length > 0);
+                }
+            }
+            updateNavigationButtons(); // Pastikan tombol di-update setelah re-selecting
+        }
+
+        function createOptionElement(optionText, optionId, questionId, index) {
+            const optionDiv = document.createElement('div');
+            optionDiv.className = 'option-item';
+
+            const input = document.createElement('input');
+            input.type = 'radio';
+            input.name = `question_${questionId}`;
+            input.value = optionId; // Value adalah option_id dari DB
+            input.id = `option_${optionId}`;
+            input.className = 'option-input';
+            input.addEventListener('change', () => selectAnswer(optionId)); // Kirim optionId ke selectAnswer
+
+            const label = document.createElement('label');
+            label.htmlFor = `option_${optionId}`;
+            label.className = 'option-label';
+
+            const letter = document.createElement('div');
+            letter.className = 'option-letter';
+            letter.textContent = String.fromCharCode(65 + index); // A, B, C, D
+
+            const text = document.createElement('div');
+            text.className = 'option-text';
+            text.textContent = optionText;
+
+            const icon = document.createElement('i');
+            icon.className = 'result-icon fas';
+
+            label.appendChild(letter);
+            label.appendChild(text);
+            label.appendChild(icon);
+
+            optionDiv.appendChild(input);
+            optionDiv.appendChild(label);
+
+            return optionDiv;
+        }
+
+        function selectAnswer(selectedOptionId) {
+            // Jika sudah dijawab (misal kembali dari pertanyaan lain), jangan izinkan perubahan
+            if (userAnswers[currentQuestionIndex].selectedOptionId !== null) return; 
+
+            const question = questions[currentQuestionIndex];
+            userAnswers[currentQuestionIndex] = {
+                selectedOptionId: selectedOptionId,
+                correctOptionId: question.correct_option_id // Simpan juga ID opsi yang benar
+            };
+            isAnswered = true; // Tandai pertanyaan ini sudah dijawab
+
+            // Update UI untuk menunjukkan pilihan
+            const labels = document.querySelectorAll('.option-label');
+            labels.forEach(label => {
+                const input = label.previousElementSibling;
+                if (input.value == selectedOptionId) {
+                    label.classList.add('selected');
+                }
+            });
+
+            // Tampilkan feedback jawaban setelah sedikit delay
+            setTimeout(() => {
+                showAnswerFeedback(selectedOptionId, question.correct_option_id);
+            }, 500);
+
+            // Enable next button
+            updateNavigationButtons();
+            updateProgress();
+        }
+
+        // Fungsi khusus untuk menampilkan feedback saat kembali ke pertanyaan yang sudah dijawab
+        function showFeedbackOnReturn(selectedOptionId, correctOptionId) {
+            const labels = document.querySelectorAll('.option-label');
+            const icons = document.querySelectorAll('.result-icon');
+            const answerStatus = document.getElementById('answerStatus');
+
+            labels.forEach(label => {
+                const input = label.previousElementSibling;
+                if (input.value == correctOptionId) {
+                    label.classList.add('correct');
+                    label.querySelector('.result-icon').classList.add('fa-check');
+                }
+                if (input.value == selectedOptionId) {
+                    label.classList.add('selected'); // Pastikan pilihan tetap terpilih
+                    if (input.value != correctOptionId) {
+                        label.classList.add('incorrect');
+                        label.querySelector('.result-icon').classList.add('fa-times');
+                    }
+                }
+            });
+
+            if (selectedOptionId == correctOptionId) {
+                answerStatus.textContent = 'Jawaban Benar!';
+                answerStatus.className = 'answer-status correct show';
+            } else {
+                const correctOptionText = questions[currentQuestionIndex].options.find(opt => opt.option_id == correctOptionId)?.option_text;
+                answerStatus.textContent = `Jawaban Salah! Yang benar adalah: ${correctOptionText}.`;
+                answerStatus.className = 'answer-status incorrect show';
+            }
+            
+            // Tampilkan penjelasan
+            const explanation = document.createElement('div');
+            explanation.style.marginTop = '10px';
+            explanation.style.fontSize = '0.95rem';
+            explanation.style.opacity = '0.8';
+            explanation.textContent = questions[currentQuestionIndex].explanation;
+            answerStatus.appendChild(explanation);
+        }
+
+        function showAnswerFeedback(selectedOptionId, correctOptionId) {
+            const labels = document.querySelectorAll('.option-label');
+            const icons = document.querySelectorAll('.result-icon');
+            const answerStatus = document.getElementById('answerStatus');
+
+            labels.forEach(label => {
+                const input = label.previousElementSibling;
+                if (input.value == correctOptionId) {
+                    label.classList.add('correct');
+                    label.querySelector('.result-icon').classList.add('fa-check');
+                }
+                if (input.value == selectedOptionId) {
+                    if (input.value != correctOptionId) {
+                        label.classList.add('incorrect');
+                        label.querySelector('.result-icon').classList.add('fa-times');
+                    }
+                }
+            });
+
+            if (selectedOptionId == correctOptionId) {
+                answerStatus.textContent = 'Jawaban Benar! Excellent!';
+                answerStatus.className = 'answer-status correct show';
+                // Correct answers are counted at the end in finishQuiz
+            } else {
+                // Temukan teks opsi yang benar untuk ditampilkan
+                const correctOptionText = questions[currentQuestionIndex].options.find(opt => opt.option_id == correctOptionId)?.option_text;
+                answerStatus.textContent = `Jawaban Salah! Jawaban yang benar adalah ${correctOptionText}.`;
+                answerStatus.className = 'answer-status incorrect show';
+            }
+
+            // Tampilkan penjelasan
+            setTimeout(() => {
+                const explanation = document.createElement('div');
+                explanation.style.marginTop = '10px';
+                explanation.style.fontSize = '0.95rem';
+                explanation.style.opacity = '0.8';
+                explanation.textContent = questions[currentQuestionIndex].explanation;
+                answerStatus.appendChild(explanation);
+            }, 1000);
+        }
+
+        function nextQuestion() {
+            // Periksa jika pertanyaan saat ini sudah dijawab
+            const currentQuestionAnswer = userAnswers[currentQuestionIndex];
+            if (questions[currentQuestionIndex].question_type === 'multiple_choice') {
+                if (currentQuestionAnswer.selectedOptionId === null) {
+                    alert('Silakan pilih jawaban terlebih dahulu!');
+                    return;
+                }
+            } else if (questions[currentQuestionIndex].question_type === 'essay' || questions[currentQuestionIndex].question_type === 'code') {
+                if (currentQuestionAnswer.selectedOptionId === null || currentQuestionAnswer.selectedOptionId.trim() === '') {
+                    alert('Silakan isi jawaban terlebih dahulu!');
+                    return;
+                }
+            }
+
+
+            if (currentQuestionIndex < questions.length - 1) {
+                currentQuestionIndex++;
+                isAnswered = false; // Reset answered status for new question
+                displayQuestion();
+            } else {
+                finishQuiz();
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                isAnswered = false; // Reset status, akan diisi ulang oleh displayQuestion
+                displayQuestion();
+            }
+        }
+
+        function updateNavigationButtons() {
+            const prevButton = document.getElementById('prevButton');
+            const nextButton = document.getElementById('nextButton');
+
+            // Previous button
+            prevButton.disabled = currentQuestionIndex === 0;
+
+            // Next button logic
+            if (currentQuestionIndex === questions.length - 1) {
+                nextButton.textContent = 'Selesai';
+                nextButton.innerHTML = '<i class="fas fa-check"></i> Selesai';
+                nextButton.className = 'nav-button btn-finish';
+            } else {
+                nextButton.innerHTML = 'Selanjutnya <i class="fas fa-arrow-right"></i>';
+                nextButton.className = 'nav-button btn-next';
+            }
+
+            // Next button is disabled if current question is not answered (for MCQs)
+            // For essay/code, it is based on text content
+            const currentQuestionAnswer = userAnswers[currentQuestionIndex];
+            const currentQuestionType = questions[currentQuestionIndex].question_type;
+
+            if (currentQuestionType === 'multiple_choice') {
+                nextButton.disabled = currentQuestionAnswer.selectedOptionId === null;
+            } else if (currentQuestionType === 'essay' || currentQuestionType === 'code') {
+                 nextButton.disabled = currentQuestionAnswer.selectedOptionId === null || currentQuestionAnswer.selectedOptionId.trim() === '';
+            } else {
+                nextButton.disabled = false; // Default to enabled for other types
+            }
+        }
+
+        function updateProgress() {
+            // Hitung pertanyaan yang sudah dijawab (berdasarkan userAnswers)
+            let answeredCount = 0;
+            userAnswers.forEach(answer => {
+                if (questions[userAnswers.indexOf(answer)].question_type === 'multiple_choice') {
+                    if (answer.selectedOptionId !== null) answeredCount++;
+                } else if (questions[userAnswers.indexOf(answer)].question_type === 'essay' || questions[userAnswers.indexOf(answer)].question_type === 'code') {
+                    if (answer.selectedOptionId !== null && answer.selectedOptionId.trim() !== '') answeredCount++;
+                }
+            });
+
+            const totalQuestions = questions.length;
+            const progress = (answeredCount / totalQuestions) * 100;
+            
+            document.getElementById('progressBar').style.width = progress + '%';
+            document.getElementById('progressText').textContent = 
+                `Pertanyaan ${currentQuestionIndex + 1} dari ${totalQuestions} (${answeredCount} dijawab)`;
+        }
+
+        async function finishQuiz() {
+            stopQuizTimer(); // Hentikan timer
+
+            quizCompleted = true;
+            
+            // Hitung ulang score dan correctAnswers dari userAnswers
+            correctAnswers = 0;
+            userAnswers.forEach((answer, index) => {
+                if (questions[index].question_type === 'multiple_choice') {
+                    if (answer.selectedOptionId == questions[index].correct_option_id) { // Gunakan == untuk perbandingan
+                        correctAnswers++;
+                    }
+                }
+                // Untuk esai/kode, penilaian dilakukan manual oleh dosen, jadi tidak dihitung benar/salah otomatis di sini
+            });
+
+            score = Math.round((correctAnswers / questions.length) * 100);
+            
+            // Kirim hasil ke backend
+            await submitQuizResult(score, correctAnswers, userAnswers.filter(a => a.selectedOptionId !== null && a.selectedOptionId.toString().trim() !== '').length, questions.length);
+
+            displayResults();
+        }
+
+        function displayResults() {
+            const quizContent = document.getElementById('quizContent');
+            
+            let gradeText = '';
+            let gradeColor = '';
+            
+            if (score >= (quizDetails ? quizDetails.passing_score : 70)) { // Gunakan passing_score dari details
+                gradeText = 'LULUS!';
+                gradeColor = '#2ecc71';
+            } else {
+                gradeText = 'TIDAK LULUS';
+                gradeColor = '#e74c3c';
+            }
+
+            quizContent.innerHTML = `
+                <div class="results-container fade-in">
+                    <h2 class="results-title">Hasil Kuis Anda</h2>
+                    <div class="score-display" style="background: linear-gradient(145deg, ${gradeColor}, ${gradeColor}dd)">
+                        ${score}%<br>
+                        <div style="font-size: 1rem; margin-top: 10px;">${gradeText}</div>
+                    </div>
+                    
+                    <div class="score-details">
+                        <div class="score-item">
+                            <h4>Total Pertanyaan</h4>
+                            <div class="number">${questions.length}</div>
+                        </div>
+                        <div class="score-item">
+                            <h4>Jawaban Benar</h4>
+                            <div class="number" style="color: #2ecc71">${correctAnswers}</div>
+                        </div>
+                        <div class="score-item">
+                            <h4>Jawaban Salah</h4>
+                            <div class="number" style="color: #e74c3c">${questions.length - correctAnswers}</div>
+                        </div>
+                        <div class="score-item">
+                            <h4>Persentase</h4>
+                            <div class="number" style="color: ${gradeColor}">${score}%</div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 30px;">
+                        <h4 style="color: #2c3e50; margin-bottom: 20px;">Review Jawaban:</h4>
+                        <div id="reviewContainer" style="text-align: left; max-width: 600px; margin: 0 auto;">
+                            ${generateReviewHTML()}
+                        </div>
+                    </div>
+                    
+                    <button class="restart-button" onclick="restartQuiz()">
+                        <i class="fas fa-redo"></i> Ulangi Kuis
+                    </button>
+                    
+                    <button class="restart-button" onclick="backToQuizLanding()" style="background: linear-gradient(145deg, #34495e, #2c3e50); margin-left: 15px;">
+                        <i class="fas fa-arrow-left"></i> Kembali ke Menu Kuis
+                    </button>
+                </div>
+            `;
+        }
+
+        function generateReviewHTML() {
+            let reviewHTML = '';
+            
+            questions.forEach((question, index) => {
+                const userAnswerData = userAnswers[index];
+                const selectedOptionId = userAnswerData ? userAnswerData.selectedOptionId : null;
+                const correctOptionId = question.correct_option_id;
+                
+                let isCorrect = false;
+                let userAnswerText = 'Tidak dijawab'; // Default
+
+                if (question.question_type === 'multiple_choice') {
+                    isCorrect = (selectedOptionId == correctOptionId); // Perbandingan ID
+                    const selectedOptionObj = question.options.find(opt => opt.option_id == selectedOptionId);
+                    userAnswerText = selectedOptionObj ? (String.fromCharCode(65 + question.options.indexOf(selectedOptionObj)) + '. ' + selectedOptionObj.option_text) : 'Tidak dijawab';
+                } else if (question.question_type === 'essay' || question.question_type === 'code') {
+                    userAnswerText = selectedOptionId || 'Tidak dijawab';
+                    isCorrect = false; // Penilaian esai/kode manual
+                }
+
+                const statusIcon = isCorrect ? '<i class="fas fa-check" style="color: #2ecc71;"></i>' : '<i class="fas fa-times" style="color: #e74c3c;"></i>';
+                
+                reviewHTML += `
+                    <div style="background: #f8f9fa; padding: 20px; margin-bottom: 15px; border-radius: 10px; border-left: 4px solid ${isCorrect ? '#2ecc71' : '#e74c3c'};">
+                        <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                            ${statusIcon}
+                            <strong style="margin-left: 10px;">Pertanyaan ${index + 1}</strong>
+                        </div>
+                        <div style="margin-bottom: 10px; font-size: 0.95rem;">${question.question}</div>
+                        <div style="margin-bottom: 5px;">
+                            <strong>Jawaban Anda:</strong> 
+                            <span style="color: ${isCorrect ? '#2ecc71' : '#e74c3c'};">
+                                ${userAnswerText}
+                            </span>
+                        </div>`;
+                        
+                if (question.question_type === 'multiple_choice' && !isCorrect) {
+                    const correctOptionObj = question.options.find(opt => opt.option_id == correctOptionId);
+                    const correctOptionText = correctOptionObj ? (String.fromCharCode(65 + question.options.indexOf(correctOptionObj)) + '. ' + correctOptionObj.option_text) : 'Tidak diketahui';
+                    reviewHTML += `
+                            <div style="margin-bottom: 5px;">
+                                <strong>Jawaban Benar:</strong> 
+                                <span style="color: #2ecc71;">
+                                    ${correctOptionText}
+                                </span>
+                            </div>`;
+                }
+
+                reviewHTML += `
+                        <div style="font-size: 0.9rem; color: #666; margin-top: 8px;">
+                            <strong>Penjelasan:</strong> ${question.explanation || 'Tidak ada penjelasan.'}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            return reviewHTML;
+        }
+
+
+        function restartQuiz() {
+            if (confirm('Apakah Anda yakin ingin mengulang kuis? Semua jawaban akan dihapus.')) {
+                // Hapus hasil kuis sebelumnya di backend (opsional, tergantung kebutuhan)
+                // Misalnya panggil API untuk mereset attempt_id atau delete attempt_id terbaru
+
+                // Reset semua variabel
+                initializeQuiz();
+                stopQuizTimer(); // Hentikan timer jika ada
+
+                // Reset UI
+                document.getElementById('quizContent').innerHTML = `
+                    <div id="loadingQuizContent" class="text-center text-muted" style="display: block;">
+                        <i class="fas fa-spinner fa-spin me-2"></i> Memuat kuis...
+                    </div>
+                    <div class="question-container" style="display: none;">
+                        <div class="question-number" id="questionNumber"></div>
+                        <div class="question-text" id="questionText">
+                            </div>
+                        
+                        <div class="options-container" id="optionsContainer">
+                            </div>
+                        
+                        <div class="answer-status" id="answerStatus">
+                            </div>
+                    </div>
+
+                    <div class="navigation-container" style="display: none;">
+                        <button class="nav-button btn-previous" id="prevButton" onclick="previousQuestion()" disabled>
+                            <i class="fas fa-arrow-left"></i>
+                            Sebelumnya
+                        </button>
+                        
+                        <button class="nav-button btn-next" id="nextButton" onclick="nextQuestion()" disabled>
+                            Selanjutnya
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                `;
+                
+                // Mulai ulang proses pengambilan dan penampilan kuis
+                document.addEventListener('DOMContentLoaded', async function() {
+                    questions = await fetchQuizContent(currentQuizId);
+                    if (questions.length > 0 && quizDetails) {
+                        document.getElementById('loadingQuizContent').style.display = 'none';
+                        document.querySelector('.question-container').style.display = 'flex';
+                        document.querySelector('.navigation-container').style.display = 'flex';
+
+                        document.getElementById('quizHeaderTitle').textContent = quizDetails.title;
+                        document.getElementById('quizHeaderSubtitle').textContent = quizDetails.description;
+                        
+                        initializeQuiz(); // Re-initialize all state
+                        displayQuestion();
+                        startQuizTimer(); // Start timer again
+                    } else {
+                        document.getElementById('loadingQuizContent').innerHTML = `
+                            <div class="text-center text-danger">
+                                <i class="fas fa-exclamation-circle me-2"></i> Gagal memuat kuis atau kuis tidak memiliki pertanyaan.
+                            </div>
+                            <button class="btn btn-primary mt-3" onclick="window.location.href='lpquiz.html'">
+                                <i class="fas fa-arrow-left me-2"></i> Kembali ke Halaman Kuis
+                            </button>
+                        `;
+                    }
+                });
+                // Langsung panggil DOMContentLoaded event untuk re-init
+                document.dispatchEvent(new Event('DOMContentLoaded'));
+            }
+        }
+
+        function backToQuizLanding() {
+            stopQuizTimer(); // Pastikan timer berhenti
+            window.location.href = 'lpquiz.html';
+        }
+
+        function autoSubmitExam() {
+            alert('Waktu ujian telah habis. Ujian akan disubmit otomatis.');
+            finishQuiz(); // Panggil fungsi finishQuiz
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (quizCompleted) return;
+            
+            const currentQuestionType = questions[currentQuestionIndex]?.question_type;
+
+            // Number keys 1-4 for selecting options A-D (only for multiple_choice)
+            if (currentQuestionType === 'multiple_choice' && e.key >= '1' && e.key <= '4') {
+                const optionIndex = parseInt(e.key) - 1;
+                const currentQuestionOptions = questions[currentQuestionIndex].options;
+                if (optionIndex < currentQuestionOptions.length && userAnswers[currentQuestionIndex].selectedOptionId === null) {
+                    const selectedOptionId = currentQuestionOptions[optionIndex].option_id;
+                    const optionInput = document.getElementById(`option_${selectedOptionId}`);
+                    if (optionInput) {
+                        optionInput.checked = true;
+                        selectAnswer(selectedOptionId);
+                    }
+                }
+            }
+            
+            // Arrow keys for navigation
+            if (e.key === 'ArrowLeft' && currentQuestionIndex > 0) {
+                previousQuestion();
+            }
+            
+            if (e.key === 'ArrowRight' && document.getElementById('nextButton').disabled === false) {
+                // Hanya izinkan maju jika tombol next tidak disabled
+                nextQuestion();
+            }
+            
+            // Enter key for next question (only if answered)
+            if (e.key === 'Enter' && document.getElementById('nextButton').disabled === false) {
+                nextQuestion();
+            }
+            
+            // Escape key for confirmation
+            if (e.key === 'Escape') {
+                if (confirm('Apakah Anda yakin ingin keluar dari kuis? Progress mungkin belum tersimpan sepenuhnya.')) {
+                    backToQuizLanding();
+                }
+            }
+        });
+
+        // Auto-save functionality (for demo - in real app would save to server)
+        function autoSave() {
+            // Dalam aplikasi nyata, Anda akan mengirim userAnswers ke backend secara berkala
+            // untuk menyimpan progres kuis.
+            const quizProgress = {
+                quiz_id: currentQuizId,
+                student_id: currentStudentId,
+                current_question_index: currentQuestionIndex,
+                user_answers: userAnswers,
+                timestamp: new Date().toISOString()
+            };
+            
+            console.log('Auto-saving quiz progress:', quizProgress);
+
+            // TODO: Implement actual API call to save progress to the database
+            // Contoh: fetch('http://localhost/api/save_quiz_progress.php', { method: 'POST', body: JSON.stringify(quizProgress) });
+        }
+
+        // Auto-save every 30 seconds
+        setInterval(autoSave, 30000);
+
+        // Prevent accidental page refresh
+        window.addEventListener('beforeunload', function(e) {
+            if (!quizCompleted && timeRemainingSeconds > 0) { // Hanya peringatkan jika kuis belum selesai dan waktu masih berjalan
+                e.preventDefault();
+                e.returnValue = 'Ujian sedang berlangsung. Yakin ingin meninggalkan halaman? Progress mungkin tidak tersimpan.';
+            }
+        });
+
+        // Accessibility improvements
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add ARIA labels for screen readers
+            document.getElementById('progressBar').setAttribute('role', 'progressbar');
+            document.getElementById('progressBar').setAttribute('aria-valuenow', '0');
+            document.getElementById('progressBar').setAttribute('aria-valuemin', '0');
+            document.getElementById('progressBar').setAttribute('aria-valuemax', '100');
+            
+            // Add keyboard focus indicators
+            const style = document.createElement('style');
+            style.textContent = `
+                .option-label:focus-within {
+                    outline: 3px solid #4a90e2;
+                    outline-offset: 2px;
+                }
+                .nav-button:focus {
+                    outline: 3px solid #4a90e2;
+                    outline-offset: 2px;
+                }
+                textarea.form-control:focus {
+                    outline: 3px solid #4a90e2;
+                    outline-offset: 2px;
+                }
+            `;
+            document.head.appendChild(style);
+        });
+    </script>
+</body>
+</html>

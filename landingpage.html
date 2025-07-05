@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduLearn - Platform E-Learning Perguruan Tinggi</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #B6D0EF;
+            --secondary-blue: #63A3F1;
+            --light-green: #FAFFEE;
+            --dark-blue: #4F8A9E;
+            --white: #FFFFFF;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow-x: hidden;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
+            min-height: 100vh;
+        }
+
+        .hero-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .floating-shapes {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .shape {
+            position: absolute;
+            opacity: 0.1;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .shape:nth-child(1) {
+            top: 10%;
+            left: 10%;
+            width: 80px;
+            height: 80px;
+            background: var(--white);
+            border-radius: 50%;
+            animation-delay: -1s;
+        }
+
+        .shape:nth-child(2) {
+            top: 20%;
+            right: 10%;
+            width: 60px;
+            height: 60px;
+            background: var(--light-green);
+            border-radius: 10px;
+            animation-delay: -3s;
+        }
+
+        .shape:nth-child(3) {
+            bottom: 20%;
+            left: 5%;
+            width: 100px;
+            height: 100px;
+            background: var(--dark-blue);
+            border-radius: 50%;
+            animation-delay: -2s;
+        }
+
+        .shape:nth-child(4) {
+            bottom: 30%;
+            right: 20%;
+            width: 70px;
+            height: 70px;
+            background: var(--white);
+            transform: rotate(45deg);
+            animation-delay: -4s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: var(--white);
+            margin-bottom: 1.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            animation: slideInUp 1s ease-out;
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            color: var(--light-green);
+            margin-bottom: 2rem;
+            font-weight: 300;
+            animation: slideInUp 1s ease-out 0.2s both;
+        }
+
+        .hero-description {
+            font-size: 1.1rem;
+            color: var(--white);
+            margin-bottom: 3rem;
+            opacity: 0.9;
+            line-height: 1.6;
+            animation: slideInUp 1s ease-out 0.4s both;
+        }
+
+        .cta-button {
+            background: linear-gradient(45deg, var(--dark-blue), var(--secondary-blue));
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--white);
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(79, 138, 158, 0.3);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            animation: slideInUp 1s ease-out 0.6s both;
+        }
+
+        .cta-button:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(79, 138, 158, 0.4);
+        }
+
+        .cta-button:hover:before {
+            left: 100%;
+        }
+
+        .features-grid {
+            position: relative;
+            z-index: 2;
+            animation: slideInUp 1s ease-out 0.8s both;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            color: var(--light-green);
+            margin-bottom: 1rem;
+        }
+
+        .feature-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--white);
+            margin-bottom: 1rem;
+        }
+
+        .feature-text {
+            color: var(--white);
+            opacity: 0.9;
+            line-height: 1.5;
+        }
+
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 8px 25px rgba(79, 138, 158, 0.3); }
+            50% { box-shadow: 0 8px 25px rgba(79, 138, 158, 0.6); }
+            100% { box-shadow: 0 8px 25px rgba(79, 138, 158, 0.3); }
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .navbar-custom {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem 0;
+        }
+
+        .navbar-brand {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--white) !important;
+        }
+
+        .navbar-nav .nav-link {
+            color: var(--white) !important;
+            font-weight: 500;
+            margin: 0 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: var(--light-green) !important;
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .feature-card {
+                margin-bottom: 2rem;
+            }
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--white);
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
+            40% { transform: translateX(-50%) translateY(-10px); }
+            60% { transform: translateX(-50%) translateY(-5px); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-custom fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-graduation-cap me-2"></i>EduLearn
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#beranda">Beranda</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#tentang">Tentang</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#fitur">Fitur</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#kontak">Kontak</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section" id="beranda">
+        <div class="floating-shapes">
+            <div class="shape"></div>
+            <div class="shape"></div>
+            <div class="shape"></div>
+            <div class="shape"></div>
+        </div>
+        
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <div class="hero-content">
+                        <h1 class="hero-title">
+                            Selamat Datang di <span style="color: var(--light-green);">EduLearn</span>
+                        </h1>
+                        <p class="hero-subtitle">
+                            Platform E-Learning Modern untuk Perguruan Tinggi
+                        </p>
+                        <p class="hero-description">
+                            Bergabunglah dengan revolusi pendidikan digital. Akses ribuan materi pembelajaran, 
+                            berinteraksi dengan dosen dan mahasiswa, dan raih prestasi akademik terbaik Anda 
+                            melalui platform pembelajaran online yang inovatif dan user-friendly.
+                        </p>
+                        <div class= onclick="navigateTo('login.html')"></div>
+                        <button class="cta-button pulse-animation" onclick="redirectToLogin()">
+                            <i class="fas fa-sign-in-alt me-2"></i>
+                            Masuk ke Platform
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="col-lg-6">
+                    <div class="features-grid">
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <div class="feature-card">
+                                    <div class="feature-icon">
+                                        <i class="fas fa-book-open"></i>
+                                    </div>
+                                    <h3 class="feature-title">Materi Lengkap</h3>
+                                    <p class="feature-text">
+                                        Akses ribuan materi pembelajaran dari berbagai jurusan dan mata kuliah
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="feature-card">
+                                    <div class="feature-icon">
+                                        <i class="fas fa-users"></i>
+                                    </div>
+                                    <h3 class="feature-title">Kolaborasi</h3>
+                                    <p class="feature-text">
+                                        Berinteraksi dengan dosen dan mahasiswa melalui forum diskusi
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="feature-card">
+                                    <div class="feature-icon">
+                                        <i class="fas fa-clock"></i>
+                                    </div>
+                                    <h3 class="feature-title">Fleksibel</h3>
+                                    <p class="feature-text">
+                                        Belajar kapan saja dan di mana saja sesuai dengan jadwal Anda
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="feature-card">
+                                    <div class="feature-icon">
+                                        <i class="fas fa-chart-line"></i>
+                                    </div>
+                                    <h3 class="feature-title">Progress Tracking</h3>
+                                    <p class="feature-text">
+                                        Pantau perkembangan belajar dengan analitik yang mendalam
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="scroll-indicator">
+            <i class="fas fa-chevron-down fa-2x"></i>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="tentang" class="py-5" style="background: var(--light-green);">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 mb-4 mb-lg-0">
+                    <div class="about-content">
+                        <h2 class="section-title mb-4" style="color: var(--dark-blue); font-size: 2.5rem; font-weight: 700;">
+                            Tentang EduLearn
+                        </h2>
+                        <p class="lead mb-4" style="color: var(--dark-blue); font-size: 1.2rem;">
+                            EduLearn adalah platform e-learning terdepan yang dirancang khusus untuk perguruan tinggi modern.
+                        </p>
+                        <p style="color: var(--dark-blue); line-height: 1.8; margin-bottom: 1.5rem;">
+                            Kami menyediakan solusi pembelajaran digital yang komprehensif, memungkinkan dosen dan mahasiswa 
+                            berinteraksi dalam lingkungan pembelajaran yang dinamis dan efektif. Platform kami dilengkapi 
+                            dengan teknologi terkini untuk mendukung proses belajar mengajar yang optimal.
+                        </p>
+                        <div class="stats-row d-flex flex-wrap gap-4">
+                            <div class="stat-item text-center">
+                                <h3 style="color: var(--secondary-blue); font-size: 2rem; font-weight: 700;">500+</h3>
+                                <p style="color: var(--dark-blue); margin: 0;">Dosen</p>
+                            </div>
+                            <div class="stat-item text-center">
+                                <h3 style="color: var(--secondary-blue); font-size: 2rem; font-weight: 700;">10,000+</h3>
+                                <p style="color: var(--dark-blue); margin: 0;">Mahasiswa</p>
+                            </div>
+                            <div class="stat-item text-center">
+                                <h3 style="color: var(--secondary-blue); font-size: 2rem; font-weight: 700;">1,200+</h3>
+                                <p style="color: var(--dark-blue); margin: 0;">Mata Kuliah</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="about-image-container">
+                        <div class="about-card" style="background: rgba(99, 163, 241, 0.1); border-radius: 20px; padding: 2rem; backdrop-filter: blur(10px); border: 1px solid rgba(99, 163, 241, 0.2);">
+                            <div class="row g-3">
+                                <div class="col-6">
+                                    <div class="mini-card p-3 text-center" style="background: var(--white); border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                                        <i class="fas fa-laptop-code fa-2x mb-2" style="color: var(--secondary-blue);"></i>
+                                        <h6 style="color: var(--dark-blue);">Digital Learning</h6>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="mini-card p-3 text-center" style="background: var(--white); border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                                        <i class="fas fa-mobile-alt fa-2x mb-2" style="color: var(--secondary-blue);"></i>
+                                        <h6 style="color: var(--dark-blue);">Mobile Friendly</h6>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="mini-card p-3 text-center" style="background: var(--white); border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                                        <i class="fas fa-shield-alt fa-2x mb-2" style="color: var(--secondary-blue);"></i>
+                                        <h6 style="color: var(--dark-blue);">Secure</h6>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="mini-card p-3 text-center" style="background: var(--white); border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                                        <i class="fas fa-cloud fa-2x mb-2" style="color: var(--secondary-blue);"></i>
+                                        <h6 style="color: var(--dark-blue);">Cloud Based</h6>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="fitur" class="py-5" style="background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="section-title" style="color: var(--white); font-size: 2.5rem; font-weight: 700; margin-bottom: 1rem;">
+                    Fitur Platform
+                </h2>
+                <p class="lead" style="color: var(--light-green); font-size: 1.2rem;">
+                    Pilih peran Anda untuk mengakses fitur yang sesuai
+                </p>
+            </div>
+
+            <div class="row justify-content-center">
+                <!-- Login Options -->
+                <div class="col-lg-10 mb-5">
+                    <div class="login-options-container">
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <div class="role-card dosen-card" style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border: 2px solid rgba(255,255,255,0.2); border-radius: 20px; padding: 2.5rem; text-align: center; cursor: pointer; transition: all 0.3s ease;" onclick="showDosenFeatures()">
+                                    <div class="role-icon mb-3">
+                                        <i class="fas fa-chalkboard-teacher fa-4x" style="color: var(--light-green);"></i>
+                                    </div>
+                                    <h3 class="role-title mb-3" style="color: var(--white); font-size: 1.8rem; font-weight: 600;">Login sebagai Dosen</h3>
+                                    <p style="color: var(--white); opacity: 0.9; margin-bottom: 1.5rem;">Akses fitur lengkap untuk mengelola pembelajaran</p>
+                                    <button class="btn role-btn" style="background: var(--dark-blue); color: var(--white); border: none; padding: 12px 30px; border-radius: 25px; font-weight: 600;">
+                                        <i class="fas fa-arrow-right me-2"></i>Lihat Fitur
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="role-card mahasiswa-card" style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border: 2px solid rgba(255,255,255,0.2); border-radius: 20px; padding: 2.5rem; text-align: center; cursor: pointer; transition: all 0.3s ease;" onclick="showMahasiswaFeatures()">
+                                    <div class="role-icon mb-3">
+                                        <i class="fas fa-user-graduate fa-4x" style="color: var(--light-green);"></i>
+                                    </div>
+                                    <h3 class="role-title mb-3" style="color: var(--white); font-size: 1.8rem; font-weight: 600;">Login sebagai Mahasiswa</h3>
+                                    <p style="color: var(--white); opacity: 0.9; margin-bottom: 1.5rem;">Akses materi dan tugas pembelajaran</p>
+                                    <button class="btn role-btn" style="background: var(--dark-blue); color: var(--white); border: none; padding: 12px 30px; border-radius: 25px; font-weight: 600;">
+                                        <i class="fas fa-arrow-right me-2"></i>Lihat Fitur
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Features Detail -->
+                <div class="col-lg-12">
+                    <div class="features-detail" id="featuresDetail" style="display: none;">
+                        <!-- Dosen Features -->
+                        <div class="dosen-features feature-section" id="dosenFeatures" style="display: none;">
+                            <h4 class="text-center mb-4" style="color: var(--light-green); font-size: 1.8rem; font-weight: 600;">
+                                <i class="fas fa-chalkboard-teacher me-2"></i>Fitur untuk Dosen
+                            </h4>
+                            <div class="row g-4">
+                                <div class="col-lg-4 col-md-6">
+                                    <div class="feature-detail-card" style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); border-radius: 15px; padding: 1.5rem; height: 100%; transition: all 0.3s ease;">
+                                        <div class="feature-icon mb-3">
+                                            <i class="fas fa-users-cog fa-3x" style="color: var(--light-green);"></i>
+                                        </div>
+                                        <h5 style="color: var(--white); margin-bottom: 1rem;">Kelas Mahasiswa</h5>
+                                        <p style="color: var(--white); opacity: 0.9; font-size: 0.9rem;">Kelola daftar mahasiswa, presensi, dan monitoring aktivitas pembelajaran</p>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-6">
+                                    <div class="feature-detail-card" style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); border-radius: 15px; padding: 1.5rem; height: 100%; transition: all 0.3s ease;">
+                                        <div class="feature-icon mb-3">
+                                            <i class="fas fa-tasks fa-3x" style="color: var(--light-green);"></i>
+                                        </div>
+                                        <h5 style="color: var(--white); margin-bottom: 1rem;">Tugas</h5>
+                                        <p style="color: var(--white); opacity: 0.9; font-size: 0.9rem;">Buat, assign, dan evaluasi tugas dengan sistem penilaian otomatis</p>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-6">
+                                    <div class="feature-detail-card" style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); border-radius: 15px; padding: 1.5rem; height: 100%; transition: all 0.3s ease;">
+                                        <div class="feature-icon mb-3">
+                                            <i class="fas fa-book fa-3x" style="color: var(--light-green);"></i>
+                                        </div>
+                                        <h5 style="color: var(--white); margin-bottom: 1rem;">Materi</h5>
+                                        <p style="color: var(--white); opacity: 0.9; font-size: 0.9rem;">Upload dan organize materi pembelajaran dalam berbagai format</p>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-6">
+                                    <div class="feature-detail-card" style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); border-radius: 15px; padding: 1.5rem; height: 100%; transition: all 0.3s ease;">
+                                        <div class="feature-icon mb-3">
+                                            <i class="fas fa-question-circle fa-3x" style="color: var(--light-green);"></i>
+                                        </div>
+                                        <h5 style="color: var(--white); margin-bottom: 1rem;">Quiz</h5>
+                                        <p style="color: var(--white); opacity: 0.9; font-size: 0.9rem;">Buat quiz interaktif dengan berbagai tipe soal dan penilaian real-time</p>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-6">
+                                    <div class="feature-detail-card" style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); border-radius: 15px; padding: 1.5rem; height: 100%; transition: all 0.3s ease;">
+                                        <div class="feature-icon mb-3">
+                                            <i class="fas fa-bullhorn fa-3x" style="color: var(--light-green);"></i>
+                                        </div>
+                                        <h5 style="color: var(--white); margin-bottom: 1rem;">Pengumuman</h5>
+                                        <p style="color: var(--white); opacity: 0.9; font-size: 0.9rem;">Kirim pengumuman penting kepada mahasiswa dengan notifikasi real-time</p>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-6">
+                                    <div class="feature-detail-card" style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); border-radius: 15px; padding: 1.5rem; height: 100%; transition: all 0.3s ease;">
+                                        <div class="feature-icon mb-3">
+                                            <i class="fas fa-clipboard-check fa-3x" style="color: var(--light-green);"></i>
+                                        </div>
+                                        <h5 style="color: var(--white); margin-bottom: 1rem;">Ujian</h5>
+                                        <p style="color: var(--white); opacity: 0.9; font-size: 0.9rem;">Kelola ujian online dengan sistem keamanan dan monitoring ketat</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Mahasiswa Features -->
+                        <div class="mahasiswa-features feature-section" id="mahasiswaFeatures" style="display: none;">
+                            <h4 class="text-center mb-4" style="color: var(--light-green); font-size: 1.8rem; font-weight: 600;">
+                                <i class="fas fa-user-graduate me-2"></i>Fitur untuk Mahasiswa
+                            </h4>
+                            <div class="row g-4 justify-content-center">
+                                <div class="col-lg-3 col-md-6">
+                                    <div class="feature-detail-card" style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); border-radius: 15px; padding: 1.5rem; height: 100%; transition: all 0.3s ease;">
+                                        <div class="feature-icon mb-3">
+                                            <i class="fas fa-book-reader fa-3x" style="color: var(--light-green);"></i>
+                                        </div>
+                                        <h5 style="color: var(--white); margin-bottom: 1rem;">Materi</h5>
+                                        <p style="color: var(--white); opacity: 0.9; font-size: 0.9rem;">Akses semua materi pembelajaran yang diberikan dosen</p>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-md-6">
+                                    <div class="feature-detail-card" style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); border-radius: 15px; padding: 1.5rem; height: 100%; transition: all 0.3s ease;">
+                                        <div class="feature-icon mb-3">
+                                            <i class="fas fa-laptop-code fa-3x" style="color: var(--light-green);"></i>
+                                        </div>
+                                        <h5 style="color: var(--white); margin-bottom: 1rem;">Tugas</h5>
+                                        <p style="color: var(--white); opacity: 0.9; font-size: 0.9rem;">Submit tugas dan lihat feedback dari dosen</p>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-md-6">
+                                    <div class="feature-detail-card" style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); border-radius: 15px; padding: 1.5rem; height: 100%; transition: all 0.3s ease;">
+                                        <div class="feature-icon mb-3">
+                                            <i class="fas fa-edit fa-3x" style="color: var(--light-green);"></i>
+                                        </div>
+                                        <h5 style="color: var(--white); margin-bottom: 1rem;">Ujian</h5>
+                                        <p style="color: var(--white); opacity: 0.9; font-size: 0.9rem;">Ikuti ujian online dengan interface yang user-friendly</p>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-md-6">
+                                    <div class="feature-detail-card" style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); border-radius: 15px; padding: 1.5rem; height: 100%; transition: all 0.3s ease;">
+                                        <div class="feature-icon mb-3">
+                                            <i class="fas fa-question-circle fa-3x" style="color: var(--light-green);"></i>
+                                        </div>
+                                        <h5 style="color: var(--white); margin-bottom: 1rem;">Quiz</h5>
+                                        <p style="color: var(--white); opacity: 0.9; font-size: 0.9rem;">Buat quiz interaktif dengan berbagai tipe soal dan penilaian real-time</p>
+                                    </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="kontak" class="py-5" style="background: var(--white);">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <div class="text-center mb-5">
+                        <h2 class="section-title" style="color: var(--dark-blue); font-size: 2.5rem; font-weight: 700; margin-bottom: 1rem;">
+                            Hubungi Kami
+                        </h2>
+                        <p class="lead" style="color: var(--dark-blue); font-size: 1.2rem; opacity: 0.8;">
+                            Ada pertanyaan? Tim support kami siap membantu Anda
+                        </p>
+                    </div>
+
+                    <div class="row g-4 mb-5">
+                        <div class="col-md-4">
+                            <div class="contact-item text-center p-4" style="background: var(--light-green); border-radius: 15px; height: 100%;">
+                                <div class="contact-icon mb-3">
+                                    <i class="fas fa-envelope fa-3x" style="color: var(--secondary-blue);"></i>
+                                </div>
+                                <h5 style="color: var(--dark-blue); margin-bottom: 1rem;">Email</h5>
+                                <p style="color: var(--dark-blue); margin: 0;">support@edulearn.ac.id</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="contact-item text-center p-4" style="background: var(--light-green); border-radius: 15px; height: 100%;">
+                                <div class="contact-icon mb-3">
+                                    <i class="fas fa-phone fa-3x" style="color: var(--secondary-blue);"></i>
+                                </div>
+                                <h5 style="color: var(--dark-blue); margin-bottom: 1rem;">Telepon</h5>
+                                <p style="color: var(--dark-blue); margin: 0;">+62 274 123 4567</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="contact-item text-center p-4" style="background: var(--light-green); border-radius: 15px; height: 100%;">
+                                <div class="contact-icon mb-3">
+                                    <i class="fas fa-map-marker-alt fa-3x" style="color: var(--secondary-blue);"></i>
+                                </div>
+                                <h5 style="color: var(--dark-blue); margin-bottom: 1rem;">Alamat</h5>
+                                <p style="color: var(--dark-blue); margin: 0;">Jl. Pendidikan No. 123<br>Yogyakarta</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="contact-form" style="background: rgba(99, 163, 241, 0.1); border-radius: 20px; padding: 2.5rem; border: 1px solid rgba(99, 163, 241, 0.2);">
+                        <form id="contactForm">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label" style="color: var(--dark-blue); font-weight: 600;">Nama Lengkap</label>
+                                    <input type="text" class="form-control" style="border: 2px solid var(--primary-blue); border-radius: 10px; padding: 12px;">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label" style="color: var(--dark-blue); font-weight: 600;">Email</label>
+                                    <input type="email" class="form-control" style="border: 2px solid var(--primary-blue); border-radius: 10px; padding: 12px;">
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label" style="color: var(--dark-blue); font-weight: 600;">Subjek</label>
+                                    <input type="text" class="form-control" style="border: 2px solid var(--primary-blue); border-radius: 10px; padding: 12px;">
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label" style="color: var(--dark-blue); font-weight: 600;">Pesan</label>
+                                    <textarea class="form-control" rows="4" style="border: 2px solid var(--primary-blue); border-radius: 10px; padding: 12px;"></textarea>
+                                </div>
+                                <div class="col-12 text-center">
+                                    <button type="submit" class="btn" style="background: linear-gradient(45deg, var(--dark-blue), var(--secondary-blue)); color: var(--white); border: none; padding: 15px 40px; border-radius: 25px; font-weight: 600; font-size: 1.1rem;">
+                                        <i class="fas fa-paper-plane me-2"></i>Kirim Pesan
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-4" style="background: var(--dark-blue);">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <div class="footer-brand">
+                        <h5 style="color: var(--white); margin: 0;">
+                            <i class="fas fa-graduation-cap me-2"></i>EduLearn
+                        </h5>
+                        <p style="color: var(--light-green); margin: 0; opacity: 0.8;">Platform E-Learning Perguruan Tinggi</p>
+                    </div>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <div class="social-links">
+                        <a href="#" class="social-link me-3" style="color: var(--light-green); font-size: 1.2rem; text-decoration: none;">
+                            <i class="fab fa-facebook"></i>
+                        </a>
+                        <a href="#" class="social-link me-3" style="color: var(--light-green); font-size: 1.2rem; text-decoration: none;">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="social-link me-3" style="color: var(--light-green); font-size: 1.2rem; text-decoration: none;">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="social-link" style="color: var(--light-green); font-size: 1.2rem; text-decoration: none;">
+                            <i class="fab fa-linkedin"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <hr style="border-color: rgba(255,255,255,0.2); margin: 1.5rem 0;">
+            <div class="text-center">
+                <p style="color: var(--light-green); margin: 0; opacity: 0.8;">
+                    &copy; 2025 EduLearn. All rights reserved.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Function to redirect to login page
+        function redirectToLogin() {
+            // Add smooth transition effect
+            document.body.style.transition = 'opacity 0.5s ease';
+            document.body.style.opacity = '0';
+            
+            setTimeout(() => {
+                // Replace this with your actual login page URL
+                // For demo purposes, showing alert
+                window.location.href = "login.html";
+                
+                // Uncomment the line below and replace with your login page URL
+                // window.location.href = 'login.html';
+                
+                // Reset opacity for demo
+                document.body.style.opacity = '1';
+            }, 500);
+        }
+
+        // Functions to show/hide feature sections
+        function showDosenFeatures() {
+            const featuresDetail = document.getElementById('featuresDetail');
+            const dosenFeatures = document.getElementById('dosenFeatures');
+            const mahasiswaFeatures = document.getElementById('mahasiswaFeatures');
+            
+            // Hide mahasiswa features
+            mahasiswaFeatures.style.display = 'none';
+            
+            // Show dosen features
+            dosenFeatures.style.display = 'block';
+            featuresDetail.style.display = 'block';
+            
+            // Smooth scroll to features
+            setTimeout(() => {
+                featuresDetail.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 100);
+            
+            // Add animation
+            dosenFeatures.style.animation = 'slideInUp 0.6s ease-out';
+        }
+
+        function showMahasiswaFeatures() {
+            const featuresDetail = document.getElementById('featuresDetail');
+            const dosenFeatures = document.getElementById('dosenFeatures');
+            const mahasiswaFeatures = document.getElementById('mahasiswaFeatures');
+            
+            // Hide dosen features
+            dosenFeatures.style.display = 'none';
+            
+            // Show mahasiswa features
+            mahasiswaFeatures.style.display = 'block';
+            featuresDetail.style.display = 'block';
+            
+            // Smooth scroll to features
+            setTimeout(() => {
+                featuresDetail.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 100);
+            
+            // Add animation
+            mahasiswaFeatures.style.animation = 'slideInUp 0.6s ease-out';
+        }
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add parallax effect to floating shapes
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const shapes = document.querySelectorAll('.shape');
+            
+            shapes.forEach((shape, index) => {
+                const speed = (index + 1) * 0.5;
+                shape.style.transform = `translateY(${scrolled * speed}px)`;
+            });
+        });
+
+        // Add entrance animation on page load
+        window.addEventListener('load', () => {
+            document.body.classList.add('loaded');
+        });
+
+        // Interactive hover effects for feature cards
+        document.querySelectorAll('.feature-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-10px) scale(1.02)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+
+        // Interactive hover effects for role cards
+        document.querySelectorAll('.role-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px) scale(1.02)';
+                this.style.boxShadow = '0 15px 35px rgba(255,255,255,0.2)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+                this.style.boxShadow = 'none';
+            });
+        });
+
+        // Interactive hover effects for feature detail cards
+        document.querySelectorAll('.feature-detail-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-8px) scale(1.03)';
+                this.style.background = 'rgba(255,255,255,0.15)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+                this.style.background = 'rgba(255,255,255,0.1)';
+            });
+        });
+
+        // Contact form handling
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Simple form validation and submission simulation
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            
+            // Show loading state
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Mengirim...';
+            submitBtn.disabled = true;
+            
+            // Simulate form submission
+            setTimeout(() => {
+                alert('Pesan berhasil dikirim! Tim support kami akan menghubungi Anda segera.');
+                
+                // Reset form
+                this.reset();
+                
+                // Reset button
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }, 2000);
+        });
+
+        // Enhanced navigation active state
+        window.addEventListener('scroll', () => {
+            const sections = document.querySelectorAll('section[id]');
+            const navLinks = document.querySelectorAll('.navbar-nav .nav-link');
+            
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (scrollY >= (sectionTop - 200)) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${current}`) {
+                    link.classList.add('active');
+                    link.style.color = 'var(--light-green)';
+                }
+            });
+        });
+
+        // Dynamic background gradient animation
+        let gradientAngle = 135;
+        setInterval(() => {
+            gradientAngle += 0.5;
+            document.body.style.background = `linear-gradient(${gradientAngle}deg, var(--primary-blue) 0%, var(--secondary-blue) 100%)`;
+        }, 100);
+    </script>
+</body>
+</html>

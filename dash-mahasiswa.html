@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Mahasiswa</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* CSS yang sudah ada */
+        :root {
+            --primary-color: #7FB3D3;
+            --secondary-color: #B8D4E3;
+            --accent-color: #E8F4F8;
+            --white: #FFFFFF;
+            --light-gray: #F8F9FA;
+            --text-dark: #2C3E50;
+            --shadow: 0 4px 12px rgba(127, 179, 211, 0.15);
+        }
+
+        body {
+            background: linear-gradient(135deg, #E8F4F8 0%, #B8D4E3 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+        }
+
+        .dashboard-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 1.5rem 0;
+            box-shadow: var(--shadow);
+            border-radius: 0 0 20px 20px;
+            margin-bottom: 2rem;
+        }
+
+        .profile-section {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .profile-pic {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            border-radius: 25px;
+            padding: 0.5rem 1.5rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .mata-kuliah-card {
+            background: var(--white);
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            height: 140px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mata-kuliah-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        }
+
+        .mata-kuliah-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(127, 179, 211, 0.25);
+        }
+
+        .mata-kuliah-icon {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .mata-kuliah-title {
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        .sidebar-card {
+            background: var(--white);
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 1.5rem;
+            border: none;
+        }
+
+        .sidebar-card h5 {
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .sidebar-item {
+            background: var(--accent-color);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .sidebar-item:hover {
+            background: var(--secondary-color);
+            transform: translateX(5px);
+        }
+
+        .sidebar-item h6 {
+            margin: 0 0 0.3rem 0;
+            color: var(--text-dark);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .sidebar-item p {
+            margin: 0;
+            color: #6C757D;
+            font-size: 0.8rem;
+        }
+
+        .welcome-text {
+            font-size: 1.1rem;
+            margin: 0;
+        }
+
+        .student-id {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin: 0;
+        }
+
+        .section-title {
+            color: var(--text-dark);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
+        }
+
+        .quick-stats {
+            background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255,255,255,0.7));
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 1rem;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-dark);
+            margin: 0;
+        }
+
+        @media (max-width: 992px) {
+            .mata-kuliah-card {
+                height: 120px;
+                margin-bottom: 1rem;
+            }
+            
+            .mata-kuliah-icon {
+                font-size: 1.8rem;
+            }
+            
+            .mata-kuliah-title {
+                font-size: 0.85rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-header {
+                margin-bottom: 1rem;
+            }
+            
+            .mata-kuliah-card {
+                height: 110px;
+            }
+            
+            .mata-kuliah-icon {
+                font-size: 1.5rem;
+            }
+            
+            .mata-kuliah-title {
+                font-size: 0.8rem;
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.6s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes ripple {
+            to {
+                transform: scale(2);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="dashboard-header">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <div class="profile-section">
+                            <div class="d-flex align-items-center">
+                                <div class="profile-pic me-3">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <div>
+                                    <h5 class="welcome-text"><span id="studentFullName">Hi, Aulia Resty Nur Aini</span></h5>
+                                    <p class="student-id" id="studentNim">23.11.5571</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <a href="#" class="logout-btn" onclick="handleLogout()">
+                            <i class="fas fa-sign-out-alt me-2"></i>Logout
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row mb-4">
+                <div class="col-12">
+                    <h3 class="section-title fade-in">
+                        <i class="fas fa-tachometer-alt me-2"></i>Menu Utama
+                    </h3>
+                </div>
+                
+                <div class="col-lg-2 col-md-4 col-sm-6 fade-in">
+                    <div class="mata-kuliah-card feature-item" data-feature="Jadwal Mata Kuliah">
+                        <div class="mata-kuliah-icon">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                        <h6 class="mata-kuliah-title">Jadwal Mata Kuliah</h6>
+                    </div>
+                </div>
+                
+                <div class="col-lg-2 col-md-4 col-sm-6 fade-in">
+                    <div class="mata-kuliah-card feature-item" data-feature="Deadline Tugas">
+                        <div class="mata-kuliah-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <h6 class="mata-kuliah-title">Deadline Tugas</h6>
+                    </div>
+                </div>
+                
+                <div class="col-lg-2 col-md-4 col-sm-6 fade-in">
+                    <div class="mata-kuliah-card feature-item" data-feature="Quiz">
+                        <div class="mata-kuliah-icon">
+                            <i class="fas fa-question-circle"></i>
+                        </div>
+                        <h6 class="mata-kuliah-title">Quiz</h6>
+                    </div>
+                </div>
+                
+                <div class="col-lg-2 col-md-4 col-sm-6 fade-in">
+                    <div class="mata-kuliah-card feature-item" data-feature="Pengumuman">
+                        <div class="mata-kuliah-icon">
+                            <i class="fas fa-bullhorn"></i>
+                        </div>
+                        <h6 class="mata-kuliah-title">Pengumuman</h6>
+                    </div>
+                </div>
+                
+                <div class="col-lg-2 col-md-4 col-sm-6 fade-in">
+                    <div class="mata-kuliah-card feature-item" data-feature="Nilai">
+                        <div class="mata-kuliah-icon">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                        <h6 class="mata-kuliah-title">Nilai</h6>
+                    </div>
+                </div>
+                
+                <div class="col-lg-2 col-md-4 col-sm-6 fade-in">
+                    <div class="mata-kuliah-card feature-item" data-feature="Ujian">
+                        <div class="mata-kuliah-icon">
+                            <i class="fas fa-clipboard-check"></i>
+                        </div>
+                        <h6 class="mata-kuliah-title">Ujian</h6>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    <h3 class="section-title fade-in">
+                        <i class="fas fa-book me-2"></i>Mata Kuliah
+                    </h3>
+                </div>
+                
+                <div id="courseList" class="row">
+                    <div class="col-12 text-center text-muted" id="loadingCourses">
+                        <i class="fas fa-spinner fa-spin me-2"></i> Memuat mata kuliah...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.10.2/umd/popper.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Asumsi student_id saat ini. Dalam aplikasi nyata, ini akan didapat dari sesi login.
+            const currentStudentId = 1; // Contoh: ID mahasiswa Aulia Resty Nur Aini dari gabungan SQL
+
+            // Fungsi untuk mengambil data profil mahasiswa
+            async function fetchStudentProfile(studentId) {
+                try {
+                    // Ganti URL ini dengan API endpoint backend Anda untuk profil mahasiswa
+                    // Contoh: /api/student/1
+                    const response = await fetch(`/api/student/${studentId}`); 
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    const data = await response.json();
+                    return data;
+                } catch (error) {
+                    console.error("Error fetching student profile:", error);
+                    return null;
+                }
+            }
+
+            // Fungsi untuk menampilkan data profil mahasiswa
+            async function displayStudentProfile() {
+                const student = await fetchStudentProfile(currentStudentId);
+                if (student) {
+                    document.getElementById('studentFullName').textContent = `Hi, ${student.full_name}`;
+                    document.getElementById('studentNim').textContent = student.nim;
+                } else {
+                    document.getElementById('studentFullName').textContent = 'Hi, Mahasiswa';
+                    document.getElementById('studentNim').textContent = 'NIM: Tidak diketahui';
+                }
+            }
+
+            // Fungsi untuk mengambil daftar mata kuliah yang diikuti mahasiswa
+            async function fetchEnrolledCourses(studentId) {
+                try {
+                    // Ganti URL ini dengan API endpoint backend Anda untuk mata kuliah yang di-enroll
+                    // Contoh: /api/student/1/courses
+                    const response = await fetch(`/api/student/${studentId}/courses`); 
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    const data = await response.json();
+                    return data;
+                } catch (error) {
+                    console.error("Error fetching enrolled courses:", error);
+                    return [];
+                }
+            }
+
+            // Fungsi untuk menampilkan daftar mata kuliah
+            async function displayCourses() {
+                const courseListDiv = document.getElementById('courseList');
+                const loadingCoursesDiv = document.getElementById('loadingCourses');
+                loadingCoursesDiv.style.display = 'block'; // Tampilkan loading
+
+                const courses = await fetchEnrolledCourses(currentStudentId);
+                courseListDiv.innerHTML = ''; // Kosongkan konten sebelumnya
+
+                if (courses.length > 0) {
+                    courses.forEach(course => {
+                        const colDiv = document.createElement('div');
+                        colDiv.className = 'col-lg-3 col-md-6 col-sm-6 fade-in';
+                        colDiv.innerHTML = `
+                            <div class="mata-kuliah-card" onclick="goToKelas(${course.course_id}, '${course.course_name}')">
+                                <div class="mata-kuliah-icon">
+                                    <i class="${getCourseIcon(course.course_name)}"></i> </div>
+                                <h6 class="mata-kuliah-title">${course.course_name}</h6>
+                            </div>
+                        `;
+                        courseListDiv.appendChild(colDiv);
+                    });
+                } else {
+                    courseListDiv.innerHTML = `
+                        <div class="col-12 text-center text-muted">
+                            Tidak ada mata kuliah yang terdaftar untuk Anda saat ini.
+                        </div>
+                    `;
+                }
+                loadingCoursesDiv.style.display = 'none'; // Sembunyikan loading
+            }
+            
+            // Fungsi pembantu untuk mendapatkan ikon berdasarkan nama mata kuliah
+            function getCourseIcon(courseName) {
+                // Anda bisa memperluas ini dengan mapping yang lebih detail di backend atau di frontend
+                if (courseName.includes('Aljabar Linear')) return 'fas fa-square-root-variable';
+                if (courseName.includes('Pemrograman Web')) return 'fas fa-globe';
+                if (courseName.includes('Analisis Desain')) return 'fas fa-drafting-compass';
+                if (courseName.includes('Multimedia')) return 'fas fa-photo-video';
+                if (courseName.includes('Big Data')) return 'fas fa-database';
+                if (courseName.includes('Kecerdasan Buatan')) return 'fas fa-brain';
+                if (courseName.includes('Basis Data')) return 'fas fa-server';
+                if (courseName.includes('Mikrokontroler')) return 'fas fa-microchip';
+                return 'fas fa-book'; // Ikon default
+            }
+
+
+            const featureItems = document.querySelectorAll('.feature-item');
+            const pages = {
+                'Jadwal Mata Kuliah': 'jadwal.html',
+                'Deadline Tugas': 'deadline.html',
+                'Quiz': 'lpquiz.html',
+                'Pengumuman': 'pengunguman.html',
+                'Nilai': 'nilai.html',
+                'Ujian': 'ujian.html'
+            };
+
+            featureItems.forEach(item => {
+                item.addEventListener('click', function () {
+                    const feature = this.getAttribute('data-feature');
+                    const page = pages[feature];
+                    if (page) {
+                        this.style.transform = 'scale(0.95)';
+                        setTimeout(() => {
+                            this.style.transform = 'scale(1)';
+                            window.location.href = page;
+                        }, 150);
+                    } else {
+                        alert(`Halaman untuk ${feature} belum tersedia!`);
+                    }
+                });
+            });
+
+            // Efek animasi dan interaksi
+            const fadeElements = document.querySelectorAll('.fade-in');
+            fadeElements.forEach((element, index) => {
+                element.style.animationDelay = `${index * 0.1}s`;
+            });
+
+            const cards = document.querySelectorAll('.mata-kuliah-card');
+            cards.forEach(card => {
+                card.addEventListener('click', function(e) {
+                    const ripple = document.createElement('div');
+                    const rect = this.getBoundingClientRect();
+                    const size = Math.max(rect.width, rect.height);
+                    const x = e.clientX - rect.left - size / 2;
+                    const y = e.clientY - rect.top - size / 2;
+                    
+                    ripple.style.cssText = `
+                        position: absolute;
+                        width: ${size}px;
+                        height: ${size}px;
+                        left: ${x}px;
+                        top: ${y}px;
+                        background: rgba(127, 179, 211, 0.3);
+                        border-radius: 50%;
+                        transform: scale(0);
+                        animation: ripple 0.6s ease-out;
+                        pointer-events: none;
+                    `;
+                    
+                    this.style.position = 'relative';
+                    this.style.overflow = 'hidden';
+                    this.appendChild(ripple);
+                    
+                    setTimeout(() => {
+                        ripple.remove();
+                    }, 600);
+                });
+            });
+
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes ripple {
+                    to {
+                        transform: scale(2);
+                        opacity: 0;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+
+            // Panggil fungsi untuk menampilkan profil dan mata kuliah saat DOM siap
+            displayStudentProfile();
+            displayCourses();
+        });
+
+        // Fungsi untuk pergi ke halaman kelas dengan mata kuliah yang dipilih
+        function goToKelas(courseId, courseName) {
+            // Simpan ID dan nama mata kuliah ke localStorage untuk diambil di halaman kelas
+            localStorage.setItem('selectedCourseId', courseId);
+            localStorage.setItem('selectedCourseName', courseName);
+            // Redirect ke halaman kelas
+            window.location.href = 'kelas.html';
+        }
+
+        // Fungsi untuk logout
+        function handleLogout() {
+            if (confirm('Apakah Anda yakin ingin logout?')) {
+                console.log('Logout...');
+                alert('Logout berhasil!');
+                // Di aplikasi nyata, Anda akan menghapus sesi atau token di sini
+                // dan redirect ke halaman login
+                // window.location.href = 'login.html';
+            }
+        }
+
+        // Smooth scrolling untuk link anchor
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>

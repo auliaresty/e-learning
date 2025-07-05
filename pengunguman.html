@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pengumuman - Dashboard Mahasiswa</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* CSS yang sudah ada */
+        :root {
+            --primary-color: #7FB3D3;
+            --secondary-color: #B8D4E3;
+            --accent-color: #E8F4F8;
+            --white: #FFFFFF;
+            --light-gray: #F8F9FA;
+            --text-dark: #2C3E50;
+            --shadow: 0 4px 12px rgba(127, 179, 211, 0.15);
+            --danger: #E74C3C;
+            --warning: #F39C12;
+            --success: #27AE60;
+        }
+
+        body {
+            background: linear-gradient(135deg, #E8F4F8 0%, #B8D4E3 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+        }
+
+        .dashboard-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 1.5rem 0;
+            box-shadow: var(--shadow);
+            border-radius: 0 0 20px 20px;
+            margin-bottom: 2rem;
+        }
+
+        .profile-section {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .profile-pic {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            border-radius: 25px;
+            padding: 0.5rem 1.5rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .announcement-card {
+            background: var(--white);
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            margin-bottom: 1.5rem;
+            border: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .announcement-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        }
+
+        .announcement-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(127, 179, 211, 0.25);
+        }
+
+        .announcement-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .mata-kuliah-badge {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .announcement-title {
+            font-weight: 700;
+            color: var(--text-dark);
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .announcement-description {
+            color: #6C757D;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .announcement-info {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .announcement-date {
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .announcement-date i {
+            margin-right: 0.5rem;
+            color: var(--primary-color);
+        }
+
+        .announcement-dosen {
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .announcement-dosen i {
+            margin-right: 0.5rem;
+            color: var(--primary-color);
+        }
+
+        .filter-section {
+            background: var(--white);
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+        }
+
+        .filter-title {
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .filter-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            border: 2px solid var(--primary-color);
+            background: transparent;
+            color: var(--primary-color);
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn.active {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .filter-btn:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .section-title {
+            color: var(--text-dark);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #6C757D;
+            display: none; /* Akan diatur oleh JS */
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-header {
+                margin-bottom: 1rem;
+            }
+            
+            .announcement-info {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .filter-buttons {
+                justify-content: center;
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.6s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="dashboard-header">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <div class="profile-section">
+                            <div class="d-flex align-items-center">
+                                <div class="profile-pic me-3">
+                                    <i class="fas fa-bullhorn"></i>
+                                </div>
+                                <div>
+                                    <h5 class="welcome-text m-0">Pengumuman</h5>
+                                    <p class="student-id m-0">Informasi terbaru dari dosen</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <a href="dash-mahasiswa.html" class="back-btn">
+                            <i class="fas fa-arrow-left me-2"></i>Kembali
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="filter-section fade-in">
+                <h5 class="filter-title">
+                    <i class="fas fa-filter me-2"></i>Filter Mata Kuliah
+                </h5>
+                <div class="filter-buttons" id="filterButtonsContainer">
+                    <button class="filter-btn active" data-filter="all">Semua</button>
+                    <span id="loadingFilterCourses" class="text-muted" style="display: none;">
+                        <i class="fas fa-spinner fa-spin me-2"></i> Memuat filter...
+                    </span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    <h3 class="section-title fade-in">
+                        <i class="fas fa-bullhorn me-2"></i>Daftar Pengumuman
+                    </h3>
+                </div>
+            </div>
+
+            <div id="announcementContainer" class="row">
+                <div class="col-12 text-center text-muted" id="loadingAnnouncements">
+                    <i class="fas fa-spinner fa-spin me-2"></i> Memuat pengumuman...
+                </div>
+            </div>
+
+            <div id="emptyState" class="empty-state">
+                <i class="fas fa-clipboard-list"></i>
+                <h4>Tidak ada pengumuman ditemukan</h4>
+                <p>Tidak ada pengumuman yang sesuai dengan filter yang dipilih.</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Asumsi student_id saat ini
+        const currentStudentId = 1; 
+        let allAnnouncements = []; // Untuk menyimpan semua pengumuman yang diambil
+
+        // Fungsi untuk mengambil data mata kuliah yang di-enroll (untuk filter)
+        async function fetchEnrolledCourses(studentId) {
+            try {
+                const response = await fetch(`http://localhost/api/get_student_courses.php?user_id=${studentId}`); 
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                if (data.error) {
+                    console.error("API Error:", data.error);
+                    return [];
+                }
+                return data;
+            } catch (error) {
+                console.error("Error fetching enrolled courses:", error);
+                return [];
+            }
+        }
+
+        // Fungsi untuk menampilkan tombol filter mata kuliah
+        async function displayFilterButtons() {
+            const filterButtonsContainer = document.getElementById('filterButtonsContainer');
+            const loadingFilterCourses = document.getElementById('loadingFilterCourses');
+            loadingFilterCourses.style.display = 'inline-block'; // Tampilkan loading
+
+            const courses = await fetchEnrolledCourses(currentStudentId);
+            
+            loadingFilterCourses.style.display = 'none'; // Sembunyikan loading
+
+            if (courses.length > 0) {
+                // Tambahkan tombol untuk setiap mata kuliah
+                courses.forEach(course => {
+                    const button = document.createElement('button');
+                    button.className = 'filter-btn';
+                    button.setAttribute('data-filter', course.course_id); // Filter berdasarkan ID mata kuliah
+                    button.textContent = course.course_name;
+                    button.addEventListener('click', () => filterAnnouncements(course.course_id));
+                    filterButtonsContainer.appendChild(button);
+                });
+            }
+        }
+
+        // Fungsi untuk mengambil semua pengumuman
+        async function fetchAllAnnouncements() {
+            try {
+                // Ganti URL ini dengan API endpoint backend Anda untuk semua pengumuman
+                const response = await fetch(`http://localhost/api/get_announcements.php`); 
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                if (data.error) {
+                    console.error("API Error:", data.error);
+                    return [];
+                }
+                return data;
+            } catch (error) {
+                console.error("Error fetching announcements:", error);
+                return [];
+            }
+        }
+
+        // Fungsi untuk menampilkan pengumuman
+        async function displayAnnouncements(filterCourseId = 'all') {
+            const announcementContainer = document.getElementById('announcementContainer');
+            const emptyState = document.getElementById('emptyState');
+            const loadingAnnouncements = document.getElementById('loadingAnnouncements');
+
+            loadingAnnouncements.style.display = 'block'; // Tampilkan loading
+            announcementContainer.innerHTML = ''; // Kosongkan konten sebelumnya
+            emptyState.style.display = 'none'; // Sembunyikan pesan kosong
+
+            // Jika belum ada data pengumuman yang dimuat, ambil semua dari API
+            if (allAnnouncements.length === 0) {
+                allAnnouncements = await fetchAllAnnouncements();
+            }
+
+            loadingAnnouncements.style.display = 'none'; // Sembunyikan loading
+
+            let filteredAnnouncements = [];
+            if (filterCourseId === 'all') {
+                filteredAnnouncements = allAnnouncements;
+            } else {
+                filteredAnnouncements = allAnnouncements.filter(ann => ann.course_id == filterCourseId);
+            }
+
+            if (filteredAnnouncements.length > 0) {
+                filteredAnnouncements.forEach(announcement => {
+                    const colDiv = document.createElement('div');
+                    colDiv.className = 'col-12 fade-in';
+                    colDiv.innerHTML = `
+                        <div class="announcement-card" data-subject-id="${announcement.course_id}">
+                            <div class="announcement-header">
+                                <span class="mata-kuliah-badge">${announcement.course_name || 'Umum'}</span>
+                            </div>
+                            <h4 class="announcement-title">${announcement.title}</h4>
+                            <p class="announcement-description">${announcement.content}</p>
+                            <div class="announcement-info">
+                                <div class="announcement-date">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    <span>Diumumkan: ${formatDateTime(announcement.published_at)}</span>
+                                </div>
+                                <div class="announcement-dosen">
+                                    <i class="fas fa-user"></i>
+                                    <span>Dosen: ${announcement.lecturer_full_name || 'Tidak Diketahui'}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    announcementContainer.appendChild(colDiv);
+                });
+            } else {
+                emptyState.style.display = 'block';
+            }
+        }
+
+        // Fungsi untuk filter pengumuman (dipanggil dari tombol)
+        function filterAnnouncements(filterValue) {
+            // Update tombol filter aktif
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.filter == filterValue) { // Gunakan '==' karena data-filter bisa string
+                    btn.classList.add('active');
+                }
+            });
+            displayAnnouncements(filterValue);
+        }
+
+        // Fungsi utilitas untuk format tanggal/waktu (sama seperti di kelas.html)
+        function formatDateTime(datetimeString) {
+            const date = new Date(datetimeString);
+            return date.toLocaleDateString('id-ID', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        // Fungsi untuk kembali ke dashboard
+        function goBack() {
+            window.location.href = 'dash-mahasiswa.html';
+        }
+
+        // Inisialisasi halaman
+        document.addEventListener('DOMContentLoaded', function() {
+            displayFilterButtons(); // Muat tombol filter mata kuliah
+            displayAnnouncements('all'); // Muat semua pengumuman secara default
+
+            const fadeElements = document.querySelectorAll('.fade-in');
+            fadeElements.forEach((element, index) => {
+                element.style.animationDelay = `${index * 0.1}s`;
+            });
+        });
+    </script>
+</body>
+</html>

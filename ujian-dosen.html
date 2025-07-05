@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Monitoring Submission - Dosen</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #B6D0EF;
+            --secondary-blue: #63A3F1;
+            --light-green: #FAFFEE;
+            --dark-teal: #4F8A9E;
+            --white: #FFFFFF;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .dashboard-container {
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .header {
+            background: var(--white);
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            padding: 25px;
+            margin-bottom: 30px;
+            border-left: 5px solid var(--dark-teal);
+        }
+
+        .header h1 {
+            color: var(--dark-teal);
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 16px;
+            margin: 0;
+        }
+
+        .exam-selector {
+            background: var(--white);
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .exam-tabs {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .exam-tab {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            background: var(--light-green);
+            color: var(--dark-teal);
+        }
+
+        .exam-tab.active {
+            background: var(--dark-teal);
+            color: var(--white);
+            box-shadow: 0 4px 15px rgba(79, 138, 158, 0.3);
+        }
+
+        .exam-tab:hover:not(.active) {
+            background: var(--primary-blue);
+            transform: translateY(-2px);
+        }
+
+        .class-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+
+        .class-card {
+            background: var(--white);
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border-top: 4px solid var(--secondary-blue);
+        }
+
+        .class-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+
+        .class-header {
+            background: linear-gradient(135deg, var(--secondary-blue), var(--primary-blue));
+            color: var(--white);
+            padding: 20px;
+            text-align: center;
+        }
+
+        .class-header h3 {
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .class-header .stats {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .student-list {
+            padding: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .student-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+
+        .student-item:hover {
+            background: var(--light-green);
+            transform: translateX(5px);
+        }
+
+        .student-item.submitted {
+            background: rgba(40, 167, 69, 0.1);
+            border-left-color: #28a745;
+        }
+
+        .student-item.not-submitted {
+            background: rgba(220, 53, 69, 0.1);
+            border-left-color: #dc3545;
+        }
+
+        .student-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .student-name {
+            font-weight: 600;
+            color: var(--dark-teal);
+            margin-bottom: 2px;
+        }
+
+        .student-id {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .submission-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .status-badge.submitted {
+            background: #28a745;
+            color: white;
+        }
+
+        .status-badge.not-submitted {
+            background: #dc3545;
+            color: white;
+        }
+
+        .download-btn {
+            background: var(--dark-teal);
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .download-btn:hover {
+            background: var(--secondary-blue);
+            transform: scale(1.05);
+        }
+
+        .summary-stats {
+            background: var(--white);
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 20px;
+            border-radius: 10px;
+            background: var(--light-green);
+            border-top: 3px solid var(--dark-teal);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--dark-teal);
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #666;
+            font-weight: 600;
+        }
+
+        .refresh-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--dark-teal);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            font-size: 20px;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+
+        .refresh-btn:hover {
+            background: var(--secondary-blue);
+            transform: scale(1.1);
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 50px;
+            color: var(--dark-teal);
+        }
+
+        .spinner {
+            border: 4px solid var(--primary-blue);
+            border-top: 4px solid var(--dark-teal);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-container {
+                padding: 15px;
+            }
+            
+            .class-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .exam-tabs {
+                flex-direction: column;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="header">
+            <h1><i class="fas fa-graduation-cap"></i> Dashboard Monitoring Submission</h1>
+            <p>Pantau progress submission UTS dan UAS mahasiswa secara real-time</p>
+        </div>
+
+        <div class="exam-selector">
+            <div class="exam-tabs">
+                <a href="ujian-dosen.php?exam_type=UTS" class="exam-tab" data-exam="UTS">
+                    <i class="fas fa-clipboard-check"></i> UTS (Ujian Tengah Semester)
+                </a>
+                <a href="ujian-dosen.php?exam_type=UAS" class="exam-tab" data-exam="UAS">
+                    <i class="fas fa-file-alt"></i> UAS (Ujian Akhir Semester)
+                </a>
+            </div>
+        </div>
+
+        <div class="summary-stats">
+            <h4 class="mb-4" style="color: var(--dark-teal);">
+                <i class="fas fa-chart-bar"></i> Ringkasan Statistik <span id="current-exam-label">...</span>
+            </h4>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number" id="total-students">...</div>
+                    <div class="stat-label">Total Mahasiswa</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="submitted-count">...</div>
+                    <div class="stat-label">Sudah Submit</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="not-submitted-count">...</div>
+                    <div class="stat-label">Belum Submit</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="completion-rate">...</div>
+                    <div class="stat-label">Tingkat Penyelesaian</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Memuat data submission...</p>
+        </div>
+
+        <div class="class-grid" id="class-grid">
+            <div class="text-center text-muted py-5">
+                <i class="fas fa-spinner fa-spin fa-3x mb-3"></i>
+                <p>Memuat kelas dan status pengumpulan...</p>
+            </div>
+        </div>
+
+        <a href="ujian-dosen.php?exam_type=" class="refresh-btn" title="Refresh Data">
+            <i class="fas fa-sync-alt"></i>
+        </a>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Data yang akan diisi oleh PHP
+        let ALL_EXAM_DATA = {}; // { 'Course Name': { students: [...], exam_submissions: [...] } }
+        let ALL_SUMMARY_DATA = {}; // { 'total_students', 'submitted_count', etc. }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            //currentExamType akan diset oleh PHP
+            // Contoh: currentExamType = '<?php // echo htmlspecialchars($current_exam_type); ?>';
+
+            renderExamCards(); // Render class cards based on PHP-provided data
+            updateSummaryCards(); // Update summary cards based on PHP-provided data
+            highlightActiveTab(); // Highlight tab yang sedang aktif
+            updateRefreshButtonLink(); // Update link refresh
+        });
+
+        function highlightActiveTab() {
+            const tabs = document.querySelectorAll('.exam-tab');
+            tabs.forEach(tab => {
+                if (tab.dataset.exam === currentExamType) {
+                    tab.classList.add('active');
+                } else {
+                    tab.classList.remove('active');
+                }
+            });
+        }
+
+        function updateRefreshButtonLink() {
+            const refreshButton = document.querySelector('.refresh-btn');
+            if (refreshButton) {
+                refreshButton.href = `ujian-dosen.php?exam_type=${currentExamType}`;
+            }
+        }
+
+        // Function to render exam cards based on ALL_EXAM_DATA
+        function renderExamCards() {
+            const classGrid = document.getElementById('class-grid');
+            classGrid.innerHTML = ''; // Clear loading message
+
+            const coursesArray = Object.values(ALL_EXAM_DATA);
+
+            if (coursesArray.length === 0) {
+                classGrid.innerHTML = `
+                    <div class="col-12 text-center text-muted py-5">
+                        <i class="fas fa-exclamation-circle fa-3x mb-3"></i>
+                        <p>Tidak ada data ujian ${currentExamType} ditemukan untuk kelas ini.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            coursesArray.forEach(course => {
+                let studentListHtml = '';
+                course.students.forEach(student => {
+                    const submission = student.submission_status; // Assuming submission_status is directly on student object
+                    const statusClass = submission && submission.submitted ? 'submitted' : 'not-submitted';
+                    const statusIcon = submission && submission.submitted ? 'fa-check-circle' : 'fa-times-circle';
+                    const statusText = submission && submission.submitted ? 'Submitted' : 'Belum Submit';
+                    const downloadBtnHtml = submission && submission.submitted ? `
+                        <button class="download-btn" onclick="downloadFile('${htmlspecialchars(student.full_name)}', 'Ujian ${currentExamType} ${htmlspecialchars(course.course_name)}', '${submission.file_type || 'pdf'}')" title="Download Ujian ${currentExamType}">
+                            <i class="fas fa-download"></i>
+                        </button>
+                    ` : '';
+                    const submissionTimeHtml = submission && submission.submitted && submission.submission_time ?
+                        `<div class="text-muted" style="font-size: 11px; margin-top: 2px;">${formatDateForDisplay(submission.submission_time)}</div>` : '';
+
+                    studentListHtml += `
+                        <div class="student-item ${statusClass}">
+                            <div class="student-info">
+                                <div class="student-name">${htmlspecialchars(student.full_name)}</div>
+                                <div class="student-id">${htmlspecialchars(student.nim)}</div>
+                                ${submissionTimeHtml}
+                            </div>
+                            <div class="submission-status">
+                                <div class="status-badge ${statusClass}">
+                                    <i class="fas ${statusIcon}"></i>
+                                    ${statusText}
+                                </div>
+                                ${downloadBtnHtml}
+                            </div>
+                        </div>
+                    `;
+                });
+
+                const classCardHtml = `
+                    <div class="class-card">
+                        <div class="class-header">
+                            <h3>${htmlspecialchars(course.course_name)}</h3>
+                            <div class="stats">
+                                ${course.submitted_count}/${course.students.length} mahasiswa telah submit
+                            </div>
+                        </div>
+                        <div class="student-list">
+                            ${studentListHtml}
+                        </div>
+                    </div>
+                `;
+                classGrid.insertAdjacentHTML('beforeend', classCardHtml);
+            });
+        }
+
+        // Function to update summary cards
+        function updateSummaryCards() {
+            document.getElementById('current-exam-label').textContent = currentExamType;
+            document.getElementById('total-students').textContent = ALL_SUMMARY_DATA.total_students || 0;
+            document.getElementById('submitted-count').textContent = ALL_SUMMARY_DATA.submitted_count || 0;
+            document.getElementById('not-submitted-count').textContent = ALL_SUMMARY_DATA.not_submitted_count || 0;
+            document.getElementById('completion-rate').textContent = `${ALL_SUMMARY_DATA.completion_rate}%` || '0%';
+        }
+
+        // Simulate file download
+        function downloadFile(studentName, examTitle, fileType) {
+            alert(`Simulasi Download: File ujian ${examTitle} untuk ${studentName} (${fileType}) akan diunduh.`);
+        }
+
+        // Helper for htmlspecialchars (since JS doesn't have it natively)
+        function htmlspecialchars(str) {
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return str.replace(/[&<>"']/g, function(m) { return map[m]; });
+        }
+        
+        // Helper to format date for display
+        function formatDateForDisplay(dateString) {
+            const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+            return new Date(dateString).toLocaleDateString('id-ID', options);
+        }
+    </script>
+</body>
+</html>

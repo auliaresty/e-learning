@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nilai Mahasiswa - Sistem Akademik</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* CSS yang sudah ada */
+        :root {
+            --primary-blue: #B6D0EF;
+            --secondary-blue: #63A3F1;
+            --light-cream: #FAFFEE;
+            --dark-teal: #4F8A9E;
+            --white: #FFFFFF;
+            --grade-a: #28a745;
+            --grade-b: #17a2b8;
+            --grade-c: #ffc107;
+            --grade-d: #fd7e14;
+            --grade-e: #dc3545;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px 0;
+        }
+
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .header-card {
+            background: linear-gradient(135deg, var(--secondary-blue), var(--dark-teal));
+            border-radius: 25px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            color: var(--white);
+            box-shadow: 0 15px 35px rgba(79, 138, 158, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="30" r="1.5" fill="rgba(255,255,255,0.1)"/><circle cx="60" cy="70" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="30" cy="80" r="1.5" fill="rgba(255,255,255,0.1)"/></svg>');
+        }
+
+        .back-button {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: var(--dark-teal);
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border-radius: 50px;
+            padding: 12px 24px;
+            margin-bottom: 1.5rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            position: relative;
+            z-index: 2;
+        }
+
+        .back-button:hover {
+            background: rgba(255, 255, 255, 1);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            color: var(--dark-teal);
+            text-decoration: none;
+        }
+
+        .student-info {
+            position: relative;
+            z-index: 1;
+        }
+
+        .student-info h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .student-info p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-bottom: 0.5rem;
+        }
+
+        .ipk-container {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .ipk-display {
+            text-align: center;
+        }
+
+        .ipk-number {
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: var(--white);
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .ipk-label {
+            font-size: 1.2rem;
+            font-weight: 600;
+            opacity: 0.9;
+        }
+
+        .grades-container {
+            background: var(--white);
+            border-radius: 25px;
+            padding: 2rem;
+            box-shadow: 0 15px 35px rgba(79, 138, 158, 0.2);
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            color: var(--dark-teal);
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .subjects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .subject-card {
+            background: var(--light-cream);
+            border-radius: 20px;
+            padding: 1.5rem;
+            border: 2px solid transparent;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .subject-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--secondary-blue), var(--dark-teal));
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+
+        .subject-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .subject-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--secondary-blue);
+            box-shadow: 0 15px 30px rgba(99, 163, 241, 0.2);
+        }
+
+        .subject-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .subject-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 15px;
+            background: linear-gradient(135deg, var(--secondary-blue), var(--dark-teal));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .subject-info h4 {
+            color: var(--dark-teal);
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+            font-size: 1.1rem;
+        }
+
+        .subject-info .credits {
+            color: #666;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .grade-display {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 1rem;
+        }
+
+        .grade-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--white);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            min-width: 60px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .grade-a { background: linear-gradient(135deg, var(--grade-a), #20c997); }
+        .grade-b { background: linear-gradient(135deg, var(--grade-b), #20c997); }
+        .grade-c { background: linear-gradient(135deg, var(--grade-c), #ffc107); }
+        .grade-d { background: linear-gradient(135deg, var(--grade-d), #ff922b); }
+        .grade-e { background: linear-gradient(135deg, var(--grade-e), #e55353); }
+
+        .grade-points-label { /* Ubah nama class untuk menghindari konflik dengan grade_points di database */
+            color: var(--dark-teal);
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .semester-info {
+            background: linear-gradient(135deg, rgba(99, 163, 241, 0.1), rgba(79, 138, 158, 0.1));
+            border-radius: 15px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(99, 163, 241, 0.2);
+        }
+
+        .semester-info h5 {
+            color: var(--dark-teal);
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .semester-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+            text-align: center;
+        }
+
+        .stat-item {
+            background: var(--white);
+            padding: 1rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--secondary-blue);
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .animate-fade-in {
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .stagger-animation {
+            animation-delay: 0.1s;
+        }
+
+        .stagger-animation:nth-child(2) { animation-delay: 0.2s; }
+        .stagger-animation:nth-child(3) { animation-delay: 0.3s; }
+        .stagger-animation:nth-child(4) { animation-delay: 0.4s; }
+        .stagger-animation:nth-child(5) { animation-delay: 0.5s; }
+        .stagger-animation:nth-child(6) { animation-delay: 0.6s; }
+        .stagger-animation:nth-child(7) { animation-delay: 0.7s; }
+        .stagger-animation:nth-child(8) { animation-delay: 0.8s; }
+
+        @media (max-width: 768px) {
+            .subjects-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .ipk-number {
+                font-size: 2.5rem;
+            }
+            
+            .header-card {
+                padding: 1.5rem;
+            }
+            
+            .grades-container {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="header-card animate-fade-in">
+            <a href="dash-mahasiswa.html" class="back-button">
+                <i class="fas fa-arrow-left"></i>
+                Kembali ke Dashboard
+            </a>
+            
+            <div class="student-info">
+                <h2><i class="fas fa-user-graduate me-2"></i><span id="studentFullName">Nama Mahasiswa</span></h2>
+                <p><i class="fas fa-id-card me-2"></i>NIM: <span id="studentNim"></span></p>
+                <p><i class="fas fa-graduation-cap me-2"></i><span id="studentProgramStudy">Program Studi</span> - Semester <span id="studentSemester"></span></p>
+                
+                <div class="ipk-container">
+                    <div class="ipk-display">
+                        <span class="ipk-number" id="ipkDisplay">0.00</span>
+                        <div class="ipk-label">Indeks Prestasi Kumulatif</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="semester-info animate-fade-in">
+            <h5><i class="fas fa-calendar-alt me-2"></i>Semester Genap 2025/2026</h5>
+            <div class="semester-stats">
+                <div class="stat-item">
+                    <span class="stat-number" id="totalCoursesSemester">0</span>
+                    <div class="stat-label">Mata Kuliah</div>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="totalCreditsSemester">0</span>
+                    <div class="stat-label">Total SKS</div>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="ipsSemester">0.00</span>
+                    <div class="stat-label">IPS Semester</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grades-container animate-fade-in">
+            <h3 class="section-title">
+                <i class="fas fa-chart-line"></i>
+                Daftar Nilai Mata Kuliah
+            </h3>
+            
+            <div class="subjects-grid" id="subjectsGrid">
+                <div class="col-12 text-center text-muted" id="loadingGrades">
+                    <i class="fas fa-spinner fa-spin me-2"></i> Memuat nilai...
+                </div>
+            </div>
+            <div id="emptyGradesState" class="empty-state" style="display: none;">
+                <i class="fas fa-clipboard-list"></i>
+                <h4>Tidak ada nilai ditemukan</h4>
+                <p>Belum ada nilai yang tersedia untuk Anda saat ini.</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Asumsi student_id saat ini
+        const currentStudentId = 1; 
+
+        // Fungsi untuk mengambil data profil mahasiswa
+        async function fetchStudentProfile(studentId) {
+            try {
+                const response = await fetch(`http://localhost/api/get_student_profile.php?user_id=${studentId}`); 
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                if (data.error) {
+                    console.error("API Error:", data.error);
+                    return null;
+                }
+                return data;
+            } catch (error) {
+                console.error("Error fetching student profile:", error);
+                return null;
+            }
+        }
+
+        // Fungsi untuk menampilkan data profil mahasiswa di header
+        async function displayStudentProfile() {
+            const student = await fetchStudentProfile(currentStudentId);
+            if (student && student.full_name) {
+                document.getElementById('studentFullName').textContent = student.full_name;
+                document.getElementById('studentNim').textContent = student.nim;
+                document.getElementById('studentProgramStudy').textContent = student.study_program || 'Tidak Diketahui';
+                // Semester hardcoded dulu, karena tidak ada di tabel users
+                document.getElementById('studentSemester').textContent = '4'; // Hardcode sementara
+            } else {
+                document.getElementById('studentFullName').textContent = 'Nama Mahasiswa';
+                document.getElementById('studentNim').textContent = '-';
+                document.getElementById('studentProgramStudy').textContent = 'Program Studi';
+                document.getElementById('studentSemester').textContent = '-';
+            }
+        }
+
+        // Fungsi untuk mendapatkan class CSS berdasarkan grade letter
+        function getGradeClass(gradeLetter) {
+            if (gradeLetter.startsWith('A')) return 'grade-a';
+            if (gradeLetter.startsWith('B')) return 'grade-b';
+            if (gradeLetter.startsWith('C')) return 'grade-c';
+            if (gradeLetter.startsWith('D')) return 'grade-d';
+            return 'grade-e';
+        }
+
+        // Fungsi pembantu untuk mendapatkan ikon berdasarkan nama mata kuliah (sama seperti dash-mahasiswa.html)
+        function getCourseIcon(courseName) {
+            if (courseName.includes('Aljabar Linear')) return 'fas fa-square-root-variable';
+            if (courseName.includes('Pemrograman Web')) return 'fas fa-globe';
+            if (courseName.includes('Analisis Desain')) return 'fas fa-drafting-compass';
+            if (courseName.includes('Multimedia')) return 'fas fa-photo-video';
+            if (courseName.includes('Big Data')) return 'fas fa-database';
+            if (courseName.includes('Kecerdasan Buatan')) return 'fas fa-brain';
+            if (courseName.includes('Basis Data')) return 'fas fa-server';
+            if (courseName.includes('Mikrokontroler')) return 'fas fa-microchip';
+            if (courseName.includes('Pemrograman Berbasis Objek')) return 'fas fa-laptop-code';
+            if (courseName.includes('Basis Data Lanjut')) return 'fas fa-database';
+            if (courseName.includes('Jaringan Komputer')) return 'fas fa-network-wired';
+            if (courseName.includes('Pengembangan Aplikasi Mobile')) return 'fas fa-mobile-alt';
+            return 'fas fa-book'; // Ikon default
+        }
+
+        // Fungsi untuk mengambil data nilai mata kuliah
+        async function fetchGrades(studentId) {
+            try {
+                // Ganti URL ini dengan API endpoint backend Anda untuk nilai
+                const response = await fetch(`http://localhost/api/get_grades.php?student_id=${studentId}`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                if (data.error) {
+                    console.error("API Error:", data.error);
+                    return [];
+                }
+                return data;
+            } catch (error) {
+                console.error("Error fetching grades:", error);
+                return [];
+            }
+        }
+
+        // Fungsi untuk menghitung IPK dan IPS serta merender nilai
+        async function renderGrades() {
+            const subjectsGrid = document.getElementById('subjectsGrid');
+            const loadingGradesDiv = document.getElementById('loadingGrades');
+            const emptyGradesState = document.getElementById('emptyGradesState');
+
+            loadingGradesDiv.style.display = 'block'; // Tampilkan loading
+            subjectsGrid.innerHTML = ''; // Kosongkan konten sebelumnya
+            emptyGradesState.style.display = 'none'; // Sembunyikan pesan kosong
+
+            const grades = await fetchGrades(currentStudentId);
+
+            loadingGradesDiv.style.display = 'none'; // Sembunyikan loading
+
+            if (grades.length === 0) {
+                emptyGradesState.style.display = 'block';
+                return;
+            }
+
+            let totalPointsAllSemesters = 0;
+            let totalCreditsAllSemesters = 0;
+            let totalCoursesSemester = 0;
+            let totalCreditsSemester = 0;
+            let totalPointsSemester = 0;
+
+            // Group grades by course to find the final grade for each course
+            const finalCourseGrades = {};
+            grades.forEach(grade => {
+                // Assuming 'Final Course' is the final grade or the highest grade for an item_id (quiz/assignment/uts/uas)
+                // For simplicity, we'll just take the latest grade for each course.
+                // In a real system, you'd define rules for final course grades.
+                if (!finalCourseGrades[grade.course_id] || new Date(grade.graded_at) > new Date(finalCourseGrades[grade.course_id].graded_at)) {
+                    finalCourseGrades[grade.course_id] = {
+                        course_id: grade.course_id,
+                        course_name: grade.course_name,
+                        credits: grade.credits,
+                        grade_value: grade.grade_value,
+                        grade_letter: grade.grade_letter,
+                        grade_points: grade.grade_points,
+                        graded_at: grade.graded_at,
+                        // Add other fields as needed
+                    };
+                }
+            });
+
+            // Loop through final course grades to calculate IPK/IPS and render cards
+            Object.values(finalCourseGrades).forEach(finalGrade => {
+                // Assume all grades fetched are for the "current semester" for IPS calculation
+                // In a real app, you'd filter grades by semester
+                totalCoursesSemester++;
+                totalCreditsSemester += finalGrade.credits;
+                totalPointsSemester += finalGrade.grade_points * finalGrade.credits;
+
+                // For IPK, sum up all
+                totalCreditsAllSemesters += finalGrade.credits;
+                totalPointsAllSemesters += finalGrade.grade_points * finalGrade.credits;
+                
+                const subjectCard = document.createElement('div');
+                subjectCard.className = 'subject-card animate-fade-in stagger-animation';
+                
+                subjectCard.innerHTML = `
+                    <div class="subject-header">
+                        <div class="subject-icon">
+                            <i class="${getCourseIcon(finalGrade.course_name)}"></i>
+                        </div>
+                        <div class="subject-info">
+                            <h4>${finalGrade.course_name}</h4>
+                            <div class="credits">${finalGrade.credits} SKS</div>
+                        </div>
+                    </div>
+                    <div class="grade-display">
+                        <div class="grade-badge ${getGradeClass(finalGrade.grade_letter)}">
+                            ${finalGrade.grade_letter}
+                        </div>
+                        <div class="grade-points-label">
+                            ${finalGrade.grade_points} poin
+                        </div>
+                    </div>
+                `;
+                subjectsGrid.appendChild(subjectCard);
+            });
+
+            // Hitung IPK
+            const ipk = totalCreditsAllSemesters > 0 ? (totalPointsAllSemesters / totalCreditsAllSemesters).toFixed(2) : '0.00';
+            document.getElementById('ipkDisplay').textContent = ipk;
+            animateIPK(parseFloat(ipk)); // Animasikan IPK
+
+            // Hitung IPS Semester
+            const ipsSemester = totalCreditsSemester > 0 ? (totalPointsSemester / totalCreditsSemester).toFixed(2) : '0.00';
+            document.getElementById('totalCoursesSemester').textContent = totalCoursesSemester;
+            document.getElementById('totalCreditsSemester').textContent = totalCreditsSemester;
+            document.getElementById('ipsSemester').textContent = ipsSemester;
+        }
+
+        // Animasi counter untuk IPK
+        function animateIPK(targetIPK) {
+            const ipkElement = document.getElementById('ipkDisplay');
+            let currentIPK = 0;
+            const increment = targetIPK / 100; // Untuk 100 langkah animasi
+            
+            const timer = setInterval(() => {
+                currentIPK += increment;
+                if (currentIPK >= targetIPK) {
+                    currentIPK = targetIPK;
+                    clearInterval(timer);
+                }
+                ipkElement.textContent = currentIPK.toFixed(2);
+            }, 20); // Setiap 20ms
+        }
+
+        // Inisialisasi halaman
+        document.addEventListener('DOMContentLoaded', function() {
+            displayStudentProfile(); // Tampilkan profil mahasiswa
+            renderGrades(); // Render nilai dan hitung IPK/IPS
+
+            const fadeElements = document.querySelectorAll('.animate-fade-in');
+            fadeElements.forEach((element, index) => {
+                element.style.animationDelay = `${index * 0.1}s`;
+            });
+        });
+    </script>
+</body>
+</html>
